@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/Second2Fragment">
+
+    <fragment
+        android:id="@+id/Second2Fragment"
+        android:name="com.example.popisosnovnihsredstava.UnosLokacijeFragment"
+        android:label="fragment_unoslokacije"
+        tools:layout="@layout/fragment_unoslokacije">
+        <action
+            android:id="@+id/action_Second2Fragment_to_First2Fragment"
+            app:destination="@id/First2Fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/First2Fragment"
+        android:name="com.example.popisosnovnihsredstava.RacunopolagacFragment"
+        android:label="fragment_racunopolagac"
+        tools:layout="@layout/fragment_racunopolagac" />
+</navigation>
