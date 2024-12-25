@@ -2,10 +2,7 @@ package com.example.popisosnovnihsredstava
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupActionBarWithNavController
-import com.example.popisosnovnihsredstava.adapters.PregledStavkiAdapter
 import com.example.popisosnovnihsredstava.databinding.ActivityPregledStavkiBinding
 
 class PregledStavkiActivity : AppCompatActivity(){
@@ -16,7 +13,7 @@ class PregledStavkiActivity : AppCompatActivity(){
 
         binding = ActivityPregledStavkiBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+/*
         setSupportActionBar(binding.toolbar)
 
         val navController = findNavController(R.id.nav_host_fragment_content_skeniranje)
@@ -31,6 +28,6 @@ class PregledStavkiActivity : AppCompatActivity(){
         searchButton.setOnClickListener {
             val query = searchEditText.text.toString()
             myAdapter.filter(query)
-        }
+        }*/
     }
 }

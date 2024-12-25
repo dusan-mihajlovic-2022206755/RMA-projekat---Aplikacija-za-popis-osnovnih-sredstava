@@ -1,5 +1,6 @@
 package com.example.popisosnovnihsredstava
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import com.google.android.material.snackbar.Snackbar
@@ -26,6 +27,9 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.toolbar)
 
+        val sharedPreferences = getSharedPreferences("UserPreferences", Context.MODE_PRIVATE)
+        binding.textviewUsername.text = sharedPreferences.getString("username", "")
+
         val scanButton: Button = findViewById(R.id.button_skeniranje)
         val pregledStavkiPopisa : Button = findViewById(R.id.button_pregled_stavki)
 
@@ -39,6 +43,10 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        val  dbHelper = SQLitePopisHelper(this)
+        dbHelper.getAllPopis()
+
+        binding.spinner
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

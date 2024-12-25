@@ -19,7 +19,84 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/content_main" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <TextView
+            android:id="@+id/textview_username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textSize="20sp"
+            android:padding="5dp"
+            android:text=""
+            app:layout_constraintBottom_toTopOf="@+id/spinner"
+            app:layout_constraintTop_toTopOf="parent" />
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="16dp"
+            android:hint="@string/spinner_hint"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:materialThemeOverlay="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_skeniranje"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:text="@string/skeniranje"
+            app:cornerRadius="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="4dp"
+            app:layout_constraintTop_toBottomOf="@id/spinner"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/button_pregled_stavki"
+            app:layout_constraintDimensionRatio="1:1" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_pregled_stavki"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:text="@string/pregled_popisa"
+            app:cornerRadius="8dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintTop_toBottomOf="@id/spinner"
+            app:layout_constraintStart_toEndOf="@id/button_skeniranje"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintDimensionRatio="1:1" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_sinhronizuj"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:text="@string/sinhronizuj"
+            app:cornerRadius="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="4dp"
+            app:layout_constraintTop_toBottomOf="@id/button_skeniranje"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/button_preuzmisifarnik"
+            app:layout_constraintDimensionRatio="1:1" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_preuzmisifarnik"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:text="@string/preuzmi_sifarnik"
+            app:cornerRadius="8dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintTop_toBottomOf="@id/button_pregled_stavki"
+            app:layout_constraintStart_toEndOf="@id/button_sinhronizuj"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintDimensionRatio="1:1"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

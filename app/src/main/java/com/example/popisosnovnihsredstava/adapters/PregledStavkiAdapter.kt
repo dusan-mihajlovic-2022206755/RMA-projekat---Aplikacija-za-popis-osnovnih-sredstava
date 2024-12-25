@@ -7,16 +7,16 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.popisosnovnihsredstava.R
 
-class PregledStavkiAdapter(private val items: List<String>) : RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
+class PregledStavkiAdapter(private val items: List<String>) : RecyclerView.Adapter<PregledStavkiAdapter.MyViewHolder>() {
 
     var filteredItems: List<String> = items
 
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val textView: TextView = itemView.findViewById(R.id.item_text)
+        val textView: TextView = itemView.findViewById(R.id.textview_unosRacunopolagaca)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_list, parent, false)
+       val view = LayoutInflater.from(parent.context).inflate(R.layout.fragment_racunopolagac, parent, false)
         return MyViewHolder(view)
     }
 

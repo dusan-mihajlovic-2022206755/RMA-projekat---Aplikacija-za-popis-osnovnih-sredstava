@@ -1,6 +1,7 @@
 package com.example.popisosnovnihsredstava
 
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,16 +19,28 @@ class RacunopolagacFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentRacunopolagacBinding.inflate(inflater, container, false)
+        binding.textViewLokacija.text = arguments?.getString("lokacija_naziv")
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        // You can implement any functionality here after navigation
-        // For example, a simple button click to go back
-        binding.buttonFirst.setOnClickListener {
-            findNavController().navigate(R.id.action_Second2Fragment_to_First2Fragment)
+        binding.editTextUnosRacunopolagaca.setOnEditorActionListener { v, actionId, event ->
+            if (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER) {
+                val inputText = v.text.toString()
+                if (inputText.isNotEmpty()) {
+                    val bundle = Bundle().apply {
+                        putString("lokacija_naziv", inputText)
+                        putString("id_lokacija", inputText)
+                        putString("racunopolagac_naziv", inputText)
+                        putString("id_racunopolagac", inputText)
+                    }
+                    findNavController().navigate(R.id.action_to_skeniranje_stavki, bundle)
+                    return@setOnEditorActionListener true
+                }
+            }
+            false
         }
     }
 

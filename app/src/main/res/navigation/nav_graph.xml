@@ -3,21 +3,31 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/Second2Fragment">
+    app:startDestination="@id/fragment_unos_lokacije">
 
     <fragment
-        android:id="@+id/Second2Fragment"
+        android:id="@+id/fragment_unos_lokacije"
         android:name="com.example.popisosnovnihsredstava.UnosLokacijeFragment"
-        android:label="fragment_unoslokacije"
+        android:label="Lokacija"
         tools:layout="@layout/fragment_unoslokacije">
         <action
-            android:id="@+id/action_Second2Fragment_to_First2Fragment"
-            app:destination="@id/First2Fragment" />
+            android:id="@+id/action_to_racunopolagac"
+            app:destination="@+id/fragment_racunopolagac" />
     </fragment>
 
     <fragment
-        android:id="@+id/First2Fragment"
+        android:id="@+id/fragment_racunopolagac"
         android:name="com.example.popisosnovnihsredstava.RacunopolagacFragment"
-        android:label="fragment_racunopolagac"
+        android:label="Računopolagač"
         tools:layout="@layout/fragment_racunopolagac" />
+        <action
+            android:id="@+id/action_to_skeniranje_stavki"
+            app:destination="@+id/fragment_to_skeniranje_stavki" />
+
+    <fragment
+        android:id="@+id/fragment_to_skeniranje_stavki"
+        android:name="com.example.popisosnovnihsredstava.SkeniranjeStavkiFragment"
+        android:label="Skeniranje"
+        tools:layout="@layout/fragment_skeniranje_stavki" />
+
 </navigation>

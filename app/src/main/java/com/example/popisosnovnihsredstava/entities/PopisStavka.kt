@@ -1,5 +1,6 @@
 package com.example.popisosnovnihsredstava.entities
 
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 data class PopisStavka(
@@ -9,5 +10,6 @@ data class PopisStavka(
     val idLokacija: Int,          // Maps to `id_lokacija` (INT UNSIGNED)
     val kolicina: Int,            // Maps to `kolicina` (INT)
     val idUser: Int,              // Maps to `id_user` (INT UNSIGNED)
+    val idRacunopolagac: Int,              // Maps to `id_user` (INT UNSIGNED)
     val vremePopisivanja: LocalDateTime, // Maps to `vreme_popisivanja` (DATETIME)
 )
