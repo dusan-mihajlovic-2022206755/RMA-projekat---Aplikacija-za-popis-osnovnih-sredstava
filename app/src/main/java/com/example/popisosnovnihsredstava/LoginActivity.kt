@@ -13,12 +13,21 @@ import com.example.popisosnovnihsredstava.helpers.SQLiteSifarnikHelper
 class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
+//        deleteDatabase("Sifarnik.db");
+//        val sifarnik = SQLiteSifarnikHelper(this)
+//        sifarnik.popuniTestnimPodacima()
+//        val popisBaza = SQLitePopisHelper(this)
+//        popisBaza.unesiTestnePopise()
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
         val usernameEditText = findViewById<EditText>(R.id.edittext_username)
         val passwordEditText = findViewById<EditText>(R.id.edittext_password)
         val loginButton = findViewById<Button>(R.id.button_login)
+
+        val sharedPreferences = getSharedPreferences("UserPreferences", MODE_PRIVATE)
+        usernameEditText.setText(sharedPreferences.getString("username", ""))
 
         loginButton.setOnClickListener {
             val username = usernameEditText.text.toString()
@@ -28,10 +37,13 @@ class LoginActivity : AppCompatActivity() {
                 val sifarnik = SQLiteSifarnikHelper(this)
                 val user = sifarnik.getUsers().find { it.username == username }
                 if (user != null) {
-                    putInPreferences(username, user)
+                    putInPreferences(user)
                     Toast.makeText(this, "Uspešan login", Toast.LENGTH_SHORT).show()
                     val intent = Intent(this, MainActivity::class.java)
                     startActivity(intent)
+                }
+                else{
+                    Toast.makeText(this, "Korisnik nije pronađen!", Toast.LENGTH_SHORT).show()
                 }
 
 

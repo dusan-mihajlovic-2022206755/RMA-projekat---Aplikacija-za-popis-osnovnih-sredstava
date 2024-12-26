@@ -1,6 +1,7 @@
 package com.example.popisosnovnihsredstava
 
 import android.os.Bundle
+import androidx.activity.viewModels
 import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
@@ -13,6 +14,7 @@ class SkeniranjeActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivitySkeniranjeBinding
+    val sharedViewModel: SkeniranjeSharedViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,6 +23,7 @@ class SkeniranjeActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setSupportActionBar(binding.toolbar)
+        sharedViewModel.popisID.value = intent.getIntExtra("id_popis", 0)
 
         val navController = findNavController(R.id.nav_host_fragment_content_skeniranje)
         appBarConfiguration = AppBarConfiguration(navController.graph)

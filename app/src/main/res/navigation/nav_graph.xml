@@ -19,10 +19,11 @@
         android:id="@+id/fragment_racunopolagac"
         android:name="com.example.popisosnovnihsredstava.RacunopolagacFragment"
         android:label="Računopolagač"
-        tools:layout="@layout/fragment_racunopolagac" />
+        tools:layout="@layout/fragment_racunopolagac">
         <action
             android:id="@+id/action_to_skeniranje_stavki"
             app:destination="@+id/fragment_to_skeniranje_stavki" />
+    </fragment>
 
     <fragment
         android:id="@+id/fragment_to_skeniranje_stavki"

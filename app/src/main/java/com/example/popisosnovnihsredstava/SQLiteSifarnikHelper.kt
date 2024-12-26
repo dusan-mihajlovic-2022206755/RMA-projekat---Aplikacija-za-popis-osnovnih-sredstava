@@ -84,7 +84,7 @@ class SQLiteSifarnikHelper(context: Context) : SQLiteOpenHelper(context, DATABAS
         const val COLUMN_USERNAME = "username"
         const val COLUMN_EMAIL = "email"
 
-        const val TABLE_RACUNOPOLAGAC = "User"
+        const val TABLE_RACUNOPOLAGAC = "Racunopolagac"
         const val COLUMN_IME_RACUNOPOLAGAC = "ime"
         const val COLUMN_PREZIME_RACUNOPOLAGAC = "prezime"
         const val COLUMN_SIFRA_RACUNOPOLAGAC = "sifra"
@@ -207,6 +207,35 @@ class SQLiteSifarnikHelper(context: Context) : SQLiteOpenHelper(context, DATABAS
         db.close()
         return lokacije
     }
+    fun searchRacunopolagac(query: String): List<Racunopolagac> {
+        val db = readableDatabase
+        val cursor = db.query(
+            TABLE_RACUNOPOLAGAC,
+            null,
+            "$COLUMN_IME_RACUNOPOLAGAC LIKE ? OR $COLUMN_PREZIME_RACUNOPOLAGAC LIKE ? OR $COLUMN_SIFRA_RACUNOPOLAGAC LIKE ?",
+            arrayOf("%$query%", "%$query%", "%$query%"),
+            null,
+            null,
+            null
+        )
+        val racunopolagaci = mutableListOf<Racunopolagac>()
+        with(cursor) {
+            while (moveToNext()) {
+                racunopolagaci.add(
+                    Racunopolagac(
+                        id = getInt(getColumnIndexOrThrow(COLUMN_ID)),
+                        sifra = getString(getColumnIndexOrThrow(COLUMN_SIFRA_RACUNOPOLAGAC)),
+                        ime = getString(getColumnIndexOrThrow(COLUMN_IME_RACUNOPOLAGAC)),
+                        prezime = getString(getColumnIndexOrThrow(COLUMN_PREZIME_RACUNOPOLAGAC)),
+                        funkcija = getString(getColumnIndexOrThrow(COLUMN_FUNKCIJA_RACUNOPOLAGAC))
+                    )
+                )
+            }
+            close()
+        }
+        db.close()
+        return racunopolagaci
+    }
 
     // CRUD Operations for User
     fun insertUser(user: User): Long {
@@ -273,7 +302,7 @@ class SQLiteSifarnikHelper(context: Context) : SQLiteOpenHelper(context, DATABAS
         return racunopolagaci
     }
 
-    fun popuniTestnimPodacima(db: SQLiteDatabase){
+    fun popuniTestnimPodacima(){
 
         val artikli = listOf(
             Artikal(id = 1, naziv = "Šećer", barkod = "1234567890123", sifra = "A001"),
@@ -337,6 +366,9 @@ class SQLiteSifarnikHelper(context: Context) : SQLiteOpenHelper(context, DATABAS
             for (racunopolagac in racunopolagaci) {
                 insertRacunopolagac(racunopolagac)
             }
+
+
+        insertUser(User(0,"Dušan", "Mihajlović", "duletest", "dusan.mihajlovic.22@singimail.rs"))
     }
 
 }

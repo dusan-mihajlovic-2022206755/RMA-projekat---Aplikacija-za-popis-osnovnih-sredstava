@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import com.example.popisosnovnihsredstava.entities.Popis
 import com.example.popisosnovnihsredstava.entities.PopisStavka
+import java.sql.Timestamp
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -118,9 +119,24 @@ class SQLitePopisHelper(context: Context) :
                 val idLokacija = getInt(getColumnIndexOrThrow(COLUMN_STAVKA_ID_LOKACIJA))
                 val kolicina = getInt(getColumnIndexOrThrow(COLUMN_STAVKA_KOLICINA))
                 val idUser = getInt(getColumnIndexOrThrow(COLUMN_STAVKA_ID_USER))
-                val vremePopisivanja = LocalDateTime.parse(getString(getColumnIndexOrThrow(COLUMN_STAVKA_VREME_POPISIVANJA)))
+                val vremePopisivanja = LocalDateTime.parse(
+                    getString(
+                        getColumnIndexOrThrow(COLUMN_STAVKA_VREME_POPISIVANJA)
+                    )
+                )
                 val idRacunopolagac = getInt(getColumnIndexOrThrow(COLUMN_STAVKA_ID_RACUNOPOLAGAC))
-                stavkaList.add(PopisStavka(id, idPopis, idArtikal, idLokacija, kolicina, idUser, idRacunopolagac, vremePopisivanja ))
+                stavkaList.add(
+                    PopisStavka(
+                        id,
+                        idPopis,
+                        idArtikal,
+                        idLokacija,
+                        kolicina,
+                        idUser,
+                        idRacunopolagac,
+                        vremePopisivanja
+                    )
+                )
             }
         }
         cursor.close()
@@ -136,7 +152,8 @@ class SQLitePopisHelper(context: Context) :
         with(cursor) {
             while (moveToNext()) {
                 val id = getInt(getColumnIndexOrThrow(COLUMN_POPIS_ID))
-                val datum = getString(getColumnIndexOrThrow(COLUMN_POPIS_DATUM))?.let { LocalDate.parse(it) }
+                val datum =
+                    getString(getColumnIndexOrThrow(COLUMN_POPIS_DATUM))?.let { LocalDate.parse(it) }
                 val napomena = getString(getColumnIndexOrThrow(COLUMN_POPIS_NAPOMENA))
                 val active = getInt(getColumnIndexOrThrow(COLUMN_POPIS_ACTIVE)) == 1
                 popisList.add(Popis(id, datum, napomena, active))
@@ -159,17 +176,42 @@ class SQLitePopisHelper(context: Context) :
         return id
     }
 
-    fun unesiTestnePodatke(){
+    fun unesiTestnePopise() {
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
         val popisList = listOf(
-            Popis(id = 1, datum = LocalDate.parse("2024-01-15", formatter), napomena = "Inventar kancelarije", active = true),
-            Popis(id = 2, datum = LocalDate.parse("2024-02-10", formatter), napomena = "Godišnji pregled magacina", active = false),
-            Popis(id = 3, datum = LocalDate.parse("2024-03-05", formatter), napomena = "Provera alata", active = true),
-            Popis(id = 4, datum = LocalDate.parse("2024-04-20", formatter), napomena = "Popis vozila", active = false),
-            Popis(id = 5, datum = LocalDate.parse("2024-05-25", formatter), napomena = "Popis elektronske opreme", active = true)
+            Popis(
+                id = 1,
+                datum = LocalDate.parse("2024-01-15", formatter),
+                napomena = "Inventar kancelarije",
+                active = true
+            ),
+            Popis(
+                id = 2,
+                datum = LocalDate.parse("2024-02-10", formatter),
+                napomena = "Godišnji pregled magacina",
+                active = false
+            ),
+            Popis(
+                id = 3,
+                datum = LocalDate.parse("2024-03-05", formatter),
+                napomena = "Provera alata",
+                active = true
+            ),
+            Popis(
+                id = 4,
+                datum = LocalDate.parse("2024-04-20", formatter),
+                napomena = "Popis vozila",
+                active = false
+            ),
+            Popis(
+                id = 5,
+                datum = LocalDate.parse("2024-05-25", formatter),
+                napomena = "Popis elektronske opreme",
+                active = true
+            )
         )
-        for (popis in popisList){
+        for (popis in popisList) {
             popis.datum?.let {
                 insertIntoPopis(
                     popis.datum ?: LocalDate.now(),  // Use current date if `datum` is null
@@ -179,6 +221,38 @@ class SQLitePopisHelper(context: Context) :
             }
         }
 
+    }
+
+    fun getPopisStavkeByIdPopis(popisID: Int): List<PopisStavka> {
+        val db = readableDatabase
+        val cursor = db.rawQuery(
+            "SELECT * FROM PopisStavka WHERE id_popis = ? ORDER BY vreme_popisivanja DESC",
+            arrayOf(popisID.toString())
+        )
+        val stavke = mutableListOf<PopisStavka>()
+
+        with(cursor) {
+            while (moveToNext()) {
+                val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+                val vremePopisivanjaStr = getString(getColumnIndexOrThrow("vreme_popisivanja"))
+                val vremePopisivanja = LocalDateTime.parse(vremePopisivanjaStr, formatter)
+                stavke.add(
+                    PopisStavka(
+                        getInt(getColumnIndexOrThrow("id")),
+                        getInt(getColumnIndexOrThrow("id_popis")),
+                        getInt(getColumnIndexOrThrow("id_artikal")),
+                        getInt(getColumnIndexOrThrow("id_lokacija")),
+                        getInt(getColumnIndexOrThrow("kolicina")),
+                        getInt(getColumnIndexOrThrow("id_user")),
+                        getInt(getColumnIndexOrThrow("id_racunopolagac")),
+                        vremePopisivanja
+                    )
+                )
+            }
+        }
+        cursor.close()
+        db.close()
+        return stavke
     }
 
 }
