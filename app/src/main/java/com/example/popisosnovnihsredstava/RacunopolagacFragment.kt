@@ -48,7 +48,7 @@ class RacunopolagacFragment : Fragment() {
                                 putString("racunopolagac_naziv", racunopolagacNaziv)
                                 putInt("id_racunopolagac", racunopolagacID)
                             }
-                            findNavController().navigate(R.id.action_to_skeniranje_stavki, bundle)
+                            findNavController().navigate(R.id.fragment_to_skeniranje_stavki, bundle)
                         }
                         else{
                             Toast.makeText(requireContext(), "Nije pronađen nijedan artikal za ovaj unos!", Toast.LENGTH_SHORT).show()

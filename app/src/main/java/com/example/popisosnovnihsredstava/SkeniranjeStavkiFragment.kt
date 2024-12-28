@@ -2,18 +2,15 @@ package com.example.popisosnovnihsredstava
 
 import adapters.PopisStavkaAdapter
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.popisosnovnihsredstava.databinding.FragmentSkeniranjeStavkiBinding
 import com.example.popisosnovnihsredstava.entities.PopisStavka
 import com.example.popisosnovnihsredstava.helpers.SQLiteSifarnikHelper
@@ -43,10 +40,17 @@ class SkeniranjeStavkiFragment : Fragment() {
         if (sharedPreferences != null) {
             userID = sharedPreferences.getInt("id_user", 0)
         }
-        binding.textviewLokacija.text = "Lokacija" + arguments?.getString("lokacija_naziv")
-        binding.textviewRacunopolagac.text = "Računopolagač" + arguments?.getString("racunopolagac_naziv")
+        binding.textviewLokacija.text = "Lokacija: " + arguments?.getString("lokacija_naziv")
+        binding.textviewRacunopolagac.text = "Računopolagač: " + arguments?.getString("racunopolagac_naziv")
 
         return binding.root
+    }
+
+    private fun InitRecyclerView() {
+        val dbHelper = SQLitePopisHelper(requireContext())
+        val popisStavke = dbHelper.getPopisStavkeByIdPopis(popisID)
+        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerView.adapter = PopisStavkaAdapter(requireContext(), popisStavke)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -55,6 +59,7 @@ class SkeniranjeStavkiFragment : Fragment() {
 
         sharedViewModel.popisID.observe(viewLifecycleOwner) { id ->
             popisID = id
+            InitRecyclerView() //da se osigura da bude nakon fetchovanja popisID...
         }
 
         binding.edittextUnosstavke.setOnEditorActionListener { v, actionId, event ->
@@ -74,24 +79,28 @@ class SkeniranjeStavkiFragment : Fragment() {
         if (srchRes.isNotEmpty()) {
             artikalID = srchRes[0].id //napraviti popup da bira?
         }
-        val stavka = PopisStavka(
-            id = 0,
-            idPopis = popisID,
-            idArtikal = artikalID,
-            idLokacija = lokacijaID,
-            kolicina = 1,
-            idUser = userID,
-            idRacunopolagac = racunopolagacID,
-            vremePopisivanja = LocalDateTime.now()
-        )
-        unesiStavkuUBazu(stavka)
+        val popisDB = SQLitePopisHelper(requireContext())
+        val postojeciID : Int = popisDB.checkIfPopisStavkaExists(artikalID, popisID, lokacijaID, racunopolagacID)
+        if (postojeciID > -1){
+            val stavka = PopisStavka(
+                id = 0,
+                idPopis = popisID,
+                idArtikal = artikalID,
+                idLokacija = lokacijaID,
+                kolicina = 1,
+                idUser = userID,
+                idRacunopolagac = racunopolagacID,
+                vremePopisivanja = LocalDateTime.now()
+            )
+            unesiStavkuUBazu(stavka)
+        }
+        else{
+            popisDB.incrementKolicinaById(postojeciID)
+        }
         Toast.makeText(requireContext(), "Stavka uspešno popisana!", Toast.LENGTH_SHORT).show()
-
-        val dbHelper = SQLitePopisHelper(requireContext())
-        val popisStavke = dbHelper.getPopisStavkeByIdPopis(popisID)
-
-        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        binding.recyclerView.adapter = PopisStavkaAdapter(popisStavke)
+        //binding.recyclerView.adapter?.notifyItemInserted(0)
+        //binding.recyclerView.adapter?.notifyDataSetChanged()
+        InitRecyclerView()
     }
 
     private fun unesiStavkuUBazu(stavka: PopisStavka): Boolean {

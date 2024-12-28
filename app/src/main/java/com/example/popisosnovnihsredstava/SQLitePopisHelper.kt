@@ -6,10 +6,12 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import com.example.popisosnovnihsredstava.entities.Popis
 import com.example.popisosnovnihsredstava.entities.PopisStavka
-import java.sql.Timestamp
+import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Date
+import java.util.Locale
 
 class SQLitePopisHelper(context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
@@ -90,6 +92,7 @@ class SQLitePopisHelper(context: Context) :
         vremePopisivanja: LocalDateTime,
         idRacunopolagac: Int
     ): Long {
+
         val db = writableDatabase
         val values = ContentValues().apply {
             put(COLUMN_STAVKA_ID_POPIS, idPopis)
@@ -97,14 +100,24 @@ class SQLitePopisHelper(context: Context) :
             put(COLUMN_STAVKA_ID_LOKACIJA, idLokacija)
             put(COLUMN_STAVKA_KOLICINA, kolicina)
             put(COLUMN_STAVKA_ID_USER, idUser)
-            put(COLUMN_STAVKA_VREME_POPISIVANJA, vremePopisivanja.toString())
+            put(COLUMN_STAVKA_VREME_POPISIVANJA,  formatirajDateTime(vremePopisivanja.toString()).toString())
             put(COLUMN_STAVKA_ID_RACUNOPOLAGAC, idRacunopolagac)
         }
         val id = db.insert(TABLE_POPIS_STAVKA, null, values)
         db.close()
         return id
     }
+    fun incrementKolicinaById(idPopisStavka: Int) {
+        val db = this.writableDatabase
+        val currentTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
 
+        val query = """
+            UPDATE PopisStavka 
+            SET kolicina = kolicina + 1, vremePopisivanja = ?
+            WHERE id = ?
+        """
+        db.execSQL(query, arrayOf(currentTime, idPopisStavka))
+    }
 
     fun getAllPopisStavka(): List<PopisStavka> {
         val db = readableDatabase
@@ -214,9 +227,9 @@ class SQLitePopisHelper(context: Context) :
         for (popis in popisList) {
             popis.datum?.let {
                 insertIntoPopis(
-                    popis.datum ?: LocalDate.now(),  // Use current date if `datum` is null
+                    popis.datum ?: LocalDate.now(),
                     popis.napomena,
-                    popis.active ?: false            // Use `false` if `active` is null
+                    popis.active ?: false
                 )
             }
         }
@@ -233,9 +246,8 @@ class SQLitePopisHelper(context: Context) :
 
         with(cursor) {
             while (moveToNext()) {
-                val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-                val vremePopisivanjaStr = getString(getColumnIndexOrThrow("vreme_popisivanja"))
-                val vremePopisivanja = LocalDateTime.parse(vremePopisivanjaStr, formatter)
+                val valueFromDBRow = getColumnIndexOrThrow("vreme_popisivanja")
+                val vremePopisivanja = formatirajDateTime(getString(valueFromDBRow))
                 stavke.add(
                     PopisStavka(
                         getInt(getColumnIndexOrThrow("id")),
@@ -254,5 +266,34 @@ class SQLitePopisHelper(context: Context) :
         db.close()
         return stavke
     }
+    fun checkIfPopisStavkaExists(artikalID: Int, popisID: Int, lokacijaID: Int, racunopolagacID: Int): Int {
+        val db = this.readableDatabase
 
+        val query = """
+            SELECT id
+            FROM PopisStavka 
+            WHERE id_artikal = ? 
+            AND id_popis = ? 
+            AND id_lokacija = ? 
+            AND id_racunopolagac = ? 
+            LIMIT 1
+        """
+        val cursor = db.rawQuery(query, arrayOf(
+            artikalID.toString(),
+            popisID.toString(),
+            lokacijaID.toString(),
+            racunopolagacID.toString()
+        ))
+
+        val popisStavkaID = if (cursor.moveToFirst()) {
+            cursor.getInt(cursor.getColumnIndexOrThrow("id"))
+        } else {
+            return -1
+        }
+
+        cursor.close()
+
+        return popisStavkaID
+    }
 }
+

@@ -1,6 +1,5 @@
 package com.example.popisosnovnihsredstava
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
@@ -16,8 +15,9 @@ class LoginActivity : AppCompatActivity() {
 //        deleteDatabase("Sifarnik.db");
 //        val sifarnik = SQLiteSifarnikHelper(this)
 //        sifarnik.popuniTestnimPodacima()
+//       deleteDatabase("bazaPopis.db");
 //        val popisBaza = SQLitePopisHelper(this)
-//        popisBaza.unesiTestnePopise()
+//popisBaza.unesiTestnePopise()
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)

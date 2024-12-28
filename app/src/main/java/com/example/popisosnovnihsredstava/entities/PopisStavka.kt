@@ -1,6 +1,5 @@
 package com.example.popisosnovnihsredstava.entities
 
-import java.time.LocalDate
 import java.time.LocalDateTime
 
 data class PopisStavka(

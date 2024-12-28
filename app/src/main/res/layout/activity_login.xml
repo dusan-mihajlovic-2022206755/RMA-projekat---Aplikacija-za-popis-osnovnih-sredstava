@@ -18,71 +18,74 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="16dp">
+        android:padding="16dp"
+        >
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/textview_username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Korisničko ime"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputLayout_username"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:hint="Username"
-            app:layout_constraintTop_toBottomOf="@id/textview_username"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edittext_username"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="text" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/textview_password"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Lozinka"
-            app:layout_constraintTop_toBottomOf="@id/textInputLayout_username"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputLayout_password"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:hint="Lozinka"
-            app:passwordToggleEnabled="true"
-            app:layout_constraintTop_toBottomOf="@id/textview_password"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edittext_password"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPassword" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/button_login"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Login"
-            app:layout_constraintTop_toBottomOf="@id/textInputLayout_password"
-            app:layout_constraintStart_toStartOf="parent"
+            android:text="PopisOS"
+            android:textSize="30sp"
+            app:layout_constraintBottom_toBottomOf="@+id/materialDivider"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="50dp"/>
+            app:layout_constraintStart_toStartOf="parent" />
 
+        <com.google.android.material.divider.MaterialDivider
+            android:id="@+id/materialDivider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:layout_editor_absoluteX="16dp" />
+
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayout_username"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Korisničko ime">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edittext_username"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayout_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Lozinka"
+                app:passwordToggleEnabled="true">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edittext_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Lozinka"
+                    android:inputType="textPassword" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button_login"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                android:text="Login" />
+        </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -65,33 +65,29 @@ class SQLiteSifarnikHelper(context: Context) : SQLiteOpenHelper(context, DATABAS
         private const val DATABASE_NAME = "Sifarnik.db"
         private const val DATABASE_VERSION = 1
 
-        // Artikal table
-        const val TABLE_ARTIKAL = "Artikal"
-        const val COLUMN_ID = "id"
-        const val COLUMN_NAZIV = "naziv"
-        const val COLUMN_BARKOD = "barkod"
-        const val COLUMN_SIFRA_ARTIKAL = "sifra"
+        private const val TABLE_ARTIKAL = "Artikal"
+        private const val COLUMN_ID = "id"
+        private const val COLUMN_NAZIV = "naziv"
+        private const val COLUMN_BARKOD = "barkod"
+        private const val COLUMN_SIFRA_ARTIKAL = "sifra"
 
-        // Lokacija table
-        const val TABLE_LOKACIJA = "Lokacija"
-        const val COLUMN_NAZIV_LOKACIJA = "naziv"
-        const val COLUMN_SIFRA = "sifra"
+        private const val TABLE_LOKACIJA = "Lokacija"
+        private const val COLUMN_NAZIV_LOKACIJA = "naziv"
+        private const val COLUMN_SIFRA = "sifra"
 
-        // User table
-        const val TABLE_USER = "User"
-        const val COLUMN_IME = "ime"
-        const val COLUMN_PREZIME = "prezime"
-        const val COLUMN_USERNAME = "username"
-        const val COLUMN_EMAIL = "email"
+        private const val TABLE_USER = "User"
+        private const val COLUMN_IME = "ime"
+        private const val COLUMN_PREZIME = "prezime"
+        private const val COLUMN_USERNAME = "username"
+        private const val COLUMN_EMAIL = "email"
 
-        const val TABLE_RACUNOPOLAGAC = "Racunopolagac"
-        const val COLUMN_IME_RACUNOPOLAGAC = "ime"
-        const val COLUMN_PREZIME_RACUNOPOLAGAC = "prezime"
-        const val COLUMN_SIFRA_RACUNOPOLAGAC = "sifra"
-        const val COLUMN_FUNKCIJA_RACUNOPOLAGAC = "funkcija"
+        private const val TABLE_RACUNOPOLAGAC = "Racunopolagac"
+        private const val COLUMN_IME_RACUNOPOLAGAC = "ime"
+        private const val COLUMN_PREZIME_RACUNOPOLAGAC = "prezime"
+        private const val COLUMN_SIFRA_RACUNOPOLAGAC = "sifra"
+        private const val COLUMN_FUNKCIJA_RACUNOPOLAGAC = "funkcija"
     }
 
-    // CRUD Operations for Artikal
     fun insertArtikal(artikal: Artikal): Long {
         val db = writableDatabase
         val values = ContentValues().apply {
@@ -122,6 +118,30 @@ class SQLiteSifarnikHelper(context: Context) : SQLiteOpenHelper(context, DATABAS
         db.close()
         return artikli
     }
+
+    fun getArtikalById(id: Int): Artikal? {
+        val db = readableDatabase
+        val selection = "$COLUMN_ID = ?"
+        val selectionArgs = arrayOf(id.toString())
+        val cursor = db.query(TABLE_ARTIKAL, null, selection, selectionArgs, null, null, null)
+        var artikal: Artikal? = null
+        with(cursor) {
+            if (moveToFirst()) {
+                artikal = Artikal(
+                    id = getInt(getColumnIndexOrThrow(COLUMN_ID)),
+                    naziv = getString(getColumnIndexOrThrow(COLUMN_NAZIV)),
+                    barkod = getString(getColumnIndexOrThrow(COLUMN_BARKOD)),
+                    sifra = getString(getColumnIndexOrThrow(COLUMN_SIFRA))
+                )
+            }
+            close()
+        }
+        db.close()
+        return artikal
+    }
+
+
+
     fun searchArtikli(query: String): List<Artikal> {
         val db = readableDatabase
         val cursor = db.query(
@@ -150,7 +170,7 @@ class SQLiteSifarnikHelper(context: Context) : SQLiteOpenHelper(context, DATABAS
         db.close()
         return artikli
     }
-    // CRUD Operations for Lokacija
+
     fun insertLokacija(lokacija: Lokacija): Long {
         val db = writableDatabase
         val values = ContentValues().apply {
@@ -237,7 +257,6 @@ class SQLiteSifarnikHelper(context: Context) : SQLiteOpenHelper(context, DATABAS
         return racunopolagaci
     }
 
-    // CRUD Operations for User
     fun insertUser(user: User): Long {
         val db = writableDatabase
         val values = ContentValues().apply {
