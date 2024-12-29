@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <!-- Left Column -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/left_container"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintWidth_percent="0.5">
+
+        <TextView
+            android:id="@+id/textview_lokacija"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Lokacija"
+            android:textSize="20sp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/textview_racunopolagac"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Racunopolagac"
+            android:textSize="20sp"
+            app:layout_constraintTop_toBottomOf="@id/textview_lokacija"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="16dp" />
+
+        <TextView
+            android:id="@+id/textview_unosstavke"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Unesite stavku"
+            android:textAlignment="center"
+            android:textSize="30sp"
+            app:layout_constraintTop_toBottomOf="@id/textview_racunopolagac"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="16dp" />
+
+        <EditText
+            android:id="@+id/edittext_unosstavke"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:hint="Osnovno sredstvo"
+            android:textSize="20sp"
+            app:layout_constraintTop_toBottomOf="@id/textview_unosstavke"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="16dp" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        app:layout_constraintStart_toEndOf="@id/left_container"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

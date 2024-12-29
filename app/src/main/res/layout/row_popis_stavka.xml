@@ -22,19 +22,41 @@
                 android:id="@+id/artikal_naziv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Artikal Name" />
+                android:text="Artikal Name"
+                android:textStyle="bold"
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/kolicina"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Količina" />
+                android:text="Količina"
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/vreme_popisivanja"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Vreme Popisivanja" />
+                android:text="Vreme Popisivanja"
+                android:textSize="14sp" />
+
+            <!-- Added Računopolagač TextView -->
+            <TextView
+                android:id="@+id/racunopolagac_naziv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Računopolagač"
+                android:textSize="14sp"
+                android:textColor="#000000" />
+
+            <!-- Added Lokacija TextView -->
+            <TextView
+                android:id="@+id/lokacija_naziv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Lokacija"
+                android:textSize="14sp"
+                android:textColor="#000000" />
 
         </LinearLayout>
 
@@ -56,7 +78,7 @@
                     android:layout_height="30dp"
                     android:layout_alignParentTop="true"
                     android:text="+"
-                    android:backgroundTint="#4CAF50"/>
+                    android:backgroundTint="#4CAF50" />
 
                 <Button
                     android:id="@+id/reduce_kolicina_button"
@@ -64,18 +86,16 @@
                     android:layout_height="30dp"
                     android:text="-"
                     android:layout_below="@id/increase_kolicina_button"
-                    android:backgroundTint="#FF9800"/>
-
+                    android:backgroundTint="#FF9800" />
 
             </RelativeLayout>
-
 
             <Button
                 android:id="@+id/delete_button"
                 android:layout_width="30dp"
-                android:layout_height="match_parent"
+                android:layout_height="60dp"
                 android:text="Del"
-                android:backgroundTint="#FF0000"/>
+                android:backgroundTint="#FF0000" />
 
         </LinearLayout>
 

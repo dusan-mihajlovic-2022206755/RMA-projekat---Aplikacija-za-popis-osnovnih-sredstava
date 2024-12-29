@@ -110,6 +110,7 @@ class SkeniranjeStavkiFragment : Fragment() {
                     vremePopisivanja = LocalDateTime.now()
                 )
                 if(!unesiStavkuUBazu(stavka)){
+                    Toast.makeText(requireContext(), "Greška!", Toast.LENGTH_SHORT).show()
                 }
             }
             else{

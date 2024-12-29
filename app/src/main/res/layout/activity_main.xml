@@ -97,6 +97,15 @@
             app:layout_constraintStart_toEndOf="@id/button_sinhronizuj"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintDimensionRatio="1:1"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_logout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Izloguj se"
+            app:cornerRadius="8dp"
+            android:layout_marginBottom="10dp"
+            app:layout_constraintBottom_toBottomOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

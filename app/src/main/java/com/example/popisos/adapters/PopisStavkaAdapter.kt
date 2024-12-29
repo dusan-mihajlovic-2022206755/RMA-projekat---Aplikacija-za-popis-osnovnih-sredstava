@@ -21,6 +21,8 @@ class PopisStavkaAdapter(private val context: Context, private val stavke: Mutab
         val idArtikalTextView: TextView = itemView.findViewById(R.id.artikal_naziv)
         val kolicinaTextView: TextView = itemView.findViewById(R.id.kolicina)
         val vremeTextView: TextView = itemView.findViewById(R.id.vreme_popisivanja)
+        val racunopolagacTextView: TextView = itemView.findViewById(R.id.racunopolagac_naziv)
+        val lokacijaTextView: TextView = itemView.findViewById(R.id.lokacija_naziv)
         val reduceKolicinaButton: Button = itemView.findViewById(R.id.reduce_kolicina_button)
         val increaseKolicinaButton: Button = itemView.findViewById(R.id.increase_kolicina_button)
         val deleteButton: Button = itemView.findViewById(R.id.delete_button)
@@ -34,15 +36,21 @@ class PopisStavkaAdapter(private val context: Context, private val stavke: Mutab
 
     override fun onBindViewHolder(holder: PopisStavkaViewHolder, position: Int) {
         val stavka = stavke[position]
-        val nazivArtikla = SQLiteSifarnikHelper(context).getArtikalById(stavka.idArtikal)?.naziv
+        val dbHelper = SQLiteSifarnikHelper(context)
 
+        val nazivArtikla = dbHelper.getArtikalById(stavka.idArtikal)?.naziv
+        var racunopolagac = dbHelper.getRacunopolagacById(stavka.idRacunopolagac)
+        val racunopolagacNaziv = racunopolagac?.sifra + " " + racunopolagac?.ime + " " + racunopolagac?.prezime;
+        var lokacija = dbHelper.getLokacijaById(stavka.idLokacija)
+        val lokacijaNaziv = lokacija?.sifra + " " + lokacija?.naziv
         holder.idArtikalTextView.text = nazivArtikla
         holder.kolicinaTextView.text = "Količina: ${stavka.kolicina}"
         holder.vremeTextView.text = formatDateTimeToString(stavka.vremePopisivanja)
+        holder.racunopolagacTextView.text = "Računopolagač: $racunopolagacNaziv"
+        holder.lokacijaTextView.text = "Lokacija: $lokacijaNaziv"
 
         holder.increaseKolicinaButton.setOnClickListener {
-            val dbHelper = SQLitePopisHelper(context)
-            dbHelper.incrementKolicinaById(stavka.id)
+            SQLitePopisHelper(context).incrementKolicinaById(stavka.id)
             stavka.kolicina += 1
             holder.kolicinaTextView.text = "Količina: ${stavka.kolicina}"
             notifyItemChanged(position)
@@ -50,8 +58,7 @@ class PopisStavkaAdapter(private val context: Context, private val stavke: Mutab
 
         holder.reduceKolicinaButton.setOnClickListener {
             if (stavka.kolicina > 1) {
-                val dbHelper = SQLitePopisHelper(context)
-                dbHelper.decrementKolicinaById(stavka.id)
+                SQLitePopisHelper(context).decrementKolicinaById(stavka.id)
                 stavka.kolicina -= 1
                 holder.kolicinaTextView.text = "Količina: ${stavka.kolicina}"
                 notifyItemChanged(position)
@@ -66,7 +73,6 @@ class PopisStavkaAdapter(private val context: Context, private val stavke: Mutab
             Toast.makeText(context, "Stavka izbrisana!", Toast.LENGTH_SHORT).show()
         }
     }
-
 
     override fun getItemCount(): Int = stavke.size
 }

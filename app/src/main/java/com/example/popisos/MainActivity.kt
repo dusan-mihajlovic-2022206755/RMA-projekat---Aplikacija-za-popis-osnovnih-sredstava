@@ -86,6 +86,7 @@ class MainActivity : AppCompatActivity() {
                     SQLitePopisHelper(this).unesiTestnePopise()
                     Toast.makeText(this, "Veb servis nije dostupan, popunjavam testnim podacima!", Toast.LENGTH_LONG).show()
                 }
+                FillPopisSpinner()
             }
 
         }
@@ -93,15 +94,18 @@ class MainActivity : AppCompatActivity() {
             sendPopisStavkeToServer(this) { isSuccess ->
                 if (isSuccess) {
                     Toast.makeText(this, "Baza uspešno sinhronizovana!", Toast.LENGTH_SHORT).show()
-                    FillPopisSpinner()
                 } else {
                     //demo i testiranje...
                     deleteDatabase("bazaPopis.db")
-                    SQLitePopisHelper(this).unesiTestnePopise()
-                    FillPopisSpinner()
-                }
 
+                }
+                izabraniPopisID = -1
+                FillPopisSpinner()
             }
+        }
+        binding.buttonLogout?.setOnClickListener {
+            finishAffinity()
+            startActivity(Intent(this, LoginActivity::class.java))
         }
 
     }
