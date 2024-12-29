@@ -8,7 +8,6 @@ import android.database.sqlite.SQLiteOpenHelper
 open class BaseSQLiteHelper(context: Context, name: String, cursorFactory: CursorFactory?, version: Int) : SQLiteOpenHelper(context, name, cursorFactory, version) {
 
     companion object {
-        // Constants for table and column names
         const val TABLE_POPIS = "Popis"
         const val COLUMN_POPIS_ID = "id"
         const val COLUMN_POPIS_DATUM = "datum"

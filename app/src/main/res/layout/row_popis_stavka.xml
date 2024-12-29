@@ -1,26 +1,84 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginVertical="5dp"
-    android:background="@color/material_dynamic_tertiary90"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:layout_margin="8dp"
+    android:elevation="4dp">
 
-    <TextView
-        android:id="@+id/artikal_naziv"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="" />
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:weightSum="3">
 
-    <TextView
-        android:id="@+id/kolicina"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="" />
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/racunopolagacTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="" />
-</LinearLayout>
+            <TextView
+                android:id="@+id/artikal_naziv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Artikal Name" />
+
+            <TextView
+                android:id="@+id/kolicina"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Količina" />
+
+            <TextView
+                android:id="@+id/vreme_popisivanja"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Vreme Popisivanja" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:orientation="horizontal">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="10dp">
+
+                <Button
+                    android:id="@+id/increase_kolicina_button"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_alignParentTop="true"
+                    android:text="+"
+                    android:backgroundTint="#4CAF50"/>
+
+                <Button
+                    android:id="@+id/reduce_kolicina_button"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:text="-"
+                    android:layout_below="@id/increase_kolicina_button"
+                    android:backgroundTint="#FF9800"/>
+
+
+            </RelativeLayout>
+
+
+            <Button
+                android:id="@+id/delete_button"
+                android:layout_width="30dp"
+                android:layout_height="match_parent"
+                android:text="Del"
+                android:backgroundTint="#FF0000"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

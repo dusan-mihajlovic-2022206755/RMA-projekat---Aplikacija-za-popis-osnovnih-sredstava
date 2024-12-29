@@ -43,12 +43,32 @@ class PregledStavkiAdapter(private val context: Context, private val originalSta
     override fun getItemCount(): Int = filteredStavke.size
 
     fun filter(query: String) {
+        val sifarnikHelper = SQLiteSifarnikHelper(context)
+
         filteredStavke = if (query.isEmpty()) {
             originalStavke
         } else {
             originalStavke.filter { stavka ->
-                SQLiteSifarnikHelper(context).getArtikalById(stavka.popisStavka.idArtikal)?.naziv
-                    ?.contains(query, ignoreCase = true) == true
+                val artikal = sifarnikHelper.getArtikalById(stavka.popisStavka.idArtikal)
+                val artikalName = artikal?.naziv
+                val artikalSifra = artikal?.sifra
+                val racunopolagac = sifarnikHelper.getRacunopolagacById(stavka.popisStavka.idRacunopolagac)
+                val racunopolagacIme = racunopolagac?.ime
+                val racunopolagacPrezime = racunopolagac?.prezime
+                val racunopolagacSifra = racunopolagac?.sifra
+
+                val lokacija = sifarnikHelper.getLokacijaById(stavka.popisStavka.idLokacija)
+                val lokacijaIme= lokacija?.naziv
+                val lokacijaSifra = lokacija?.sifra
+
+                artikalName?.contains(query, ignoreCase = true) == true ||
+                        artikalSifra?.contains(query, ignoreCase = true) == true ||
+                        racunopolagacIme?.contains(query, ignoreCase = true) == true ||
+                        racunopolagacPrezime?.contains(query, ignoreCase = true) == true ||
+                        racunopolagacSifra?.contains(query, ignoreCase = true) == true ||
+                        lokacijaIme?.contains(query, ignoreCase = true) == true ||
+                        lokacijaSifra?.contains(query, ignoreCase = true) == true
+
             }
         }
         notifyDataSetChanged()

@@ -24,7 +24,6 @@ class SQLitePopisHelper(context: Context) :
     }
 
     fun createDB(db: SQLiteDatabase?) {
-        // Create Popis Table
         val createPopisTable = """
         CREATE TABLE $TABLE_POPIS (
             $COLUMN_POPIS_ID INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -35,7 +34,6 @@ class SQLitePopisHelper(context: Context) :
         """
         db?.execSQL(createPopisTable)
 
-        // Create PopisStavka Table
         val createPopisStavkaTable = """
         CREATE TABLE $TABLE_POPIS_STAVKA (
             $COLUMN_STAVKA_ID INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -100,6 +98,27 @@ class SQLitePopisHelper(context: Context) :
             WHERE $COLUMN_STAVKA_ID = ?
         """
         db.execSQL(query, arrayOf(currentTime, idPopisStavka))
+    }
+    fun decrementKolicinaById(idPopisStavka: Int) {
+        val db = this.writableDatabase
+        val currentTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
+
+        val query = """
+        UPDATE $TABLE_POPIS_STAVKA 
+        SET $COLUMN_STAVKA_KOLICINA = $COLUMN_STAVKA_KOLICINA - 1, $COLUMN_STAVKA_VREME_POPISIVANJA = ?
+        WHERE $COLUMN_STAVKA_ID = ?
+        AND $COLUMN_STAVKA_KOLICINA > 0  -- Ensure the quantity doesn't go below 0
+    """
+        db.execSQL(query, arrayOf(currentTime, idPopisStavka))
+    }
+
+    fun deletePopisStavkaById(idPopisStavka: Int) {
+        val db = this.writableDatabase
+        val query = """
+        DELETE FROM $TABLE_POPIS_STAVKA
+        WHERE $COLUMN_STAVKA_ID = ?
+    """
+        db.execSQL(query, arrayOf(idPopisStavka))
     }
 
     fun getAllPopis(): List<Popis> {

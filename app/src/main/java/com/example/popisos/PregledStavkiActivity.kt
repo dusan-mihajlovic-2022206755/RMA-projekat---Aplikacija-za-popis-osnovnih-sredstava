@@ -20,14 +20,16 @@ class PregledStavkiActivity : AppCompatActivity() {
         binding = ActivityPregledStavkiBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
         val dbHelper = SQLitePopisHelper(this)
         val sifarnik = SQLiteSifarnikHelper(this)
 
-
         stavke = dbHelper.getPopisStavkeByIdPopis(intent.getIntExtra("id_popis", 0))
-            .map {
-                 x -> var (racunopolagac, lokacija, artikal) = sifarnik.getSifarnikData(x.idArtikal, x.idLokacija, x.idRacunopolagac)
-                 PopisStavkaModelPregledStavki(x, racunopolagac.toString(), lokacija.toString(), artikal.toString())
+            .map { x ->
+                val (racunopolagac, lokacija, artikal) = sifarnik.getSifarnikData(x.idArtikal, x.idLokacija, x.idRacunopolagac)
+                PopisStavkaModelPregledStavki(x, racunopolagac.toString(), lokacija.toString(), artikal.toString())
             }
 
         adapter = PregledStavkiAdapter(this, stavke)
@@ -37,6 +39,16 @@ class PregledStavkiActivity : AppCompatActivity() {
         binding.searchButton.setOnClickListener {
             val query = binding.searchEditText.text.toString()
             adapter.filter(query)
+        }
+    }
+
+    override fun onOptionsItemSelected(item: android.view.MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 }

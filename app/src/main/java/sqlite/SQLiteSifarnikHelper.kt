@@ -114,7 +114,47 @@ class SQLiteSifarnikHelper(context: Context) : BaseSQLiteHelper(context, DATABAS
         db.close()
         return artikal
     }
+    fun getRacunopolagacById(id: Int): Racunopolagac? {
+        val db = readableDatabase
+        val selection = "$COLUMN_ID = ?"
+        val selectionArgs = arrayOf(id.toString())
+        val cursor = db.query(TABLE_RACUNOPOLAGAC, null, selection, selectionArgs, null, null, null)
+        var racunopolagac: Racunopolagac? = null
+        with(cursor) {
+            if (moveToFirst()) {
+                racunopolagac = Racunopolagac(
+                    id = getInt(getColumnIndexOrThrow(COLUMN_ID)),
+                    sifra = getString(getColumnIndexOrThrow(COLUMN_SIFRA_RACUNOPOLAGAC)),
+                    ime = getString(getColumnIndexOrThrow(COLUMN_IME_RACUNOPOLAGAC)),
+                    prezime = getString(getColumnIndexOrThrow(COLUMN_PREZIME_RACUNOPOLAGAC)),
+                    funkcija = getString(getColumnIndexOrThrow(COLUMN_FUNKCIJA_RACUNOPOLAGAC))
+                )
+            }
+            close()
+        }
+        db.close()
+        return racunopolagac
+    }
 
+    fun getLokacijaById(id: Int): Lokacija? {
+        val db = readableDatabase
+        val selection = "$COLUMN_ID = ?"
+        val selectionArgs = arrayOf(id.toString())
+        val cursor = db.query(TABLE_LOKACIJA, null, selection, selectionArgs, null, null, null)
+        var lokacija: Lokacija? = null
+        with(cursor) {
+            if (moveToFirst()) {
+                lokacija = Lokacija(
+                    id = getInt(getColumnIndexOrThrow(COLUMN_ID)),
+                    naziv = getString(getColumnIndexOrThrow(COLUMN_NAZIV)),
+                    sifra = getString(getColumnIndexOrThrow(COLUMN_SIFRA))
+                )
+            }
+            close()
+        }
+        db.close()
+        return lokacija
+    }
 
 
     fun searchArtikli(query: String): List<Artikal> {

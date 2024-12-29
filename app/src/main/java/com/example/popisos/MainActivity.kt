@@ -71,6 +71,17 @@ class MainActivity : AppCompatActivity() {
         FillPopisSpinner()
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt("izabraniPopisID", izabraniPopisID)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        izabraniPopisID = savedInstanceState.getInt("izabraniPopisID", 0)
+    }
+
+
     private fun FillPopisSpinner() {
         val dbHelper = SQLitePopisHelper(this)
 
@@ -88,7 +99,7 @@ class MainActivity : AppCompatActivity() {
         binding.spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>,
-                view: View,
+                view: View?,
                 position: Int,
                 id: Long
             ) {
@@ -98,7 +109,6 @@ class MainActivity : AppCompatActivity() {
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 //nista
             }
-
         }
     }
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

@@ -1,38 +1,64 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginVertical="5dp"
-    android:background="@color/material_dynamic_tertiary90"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:layout_marginVertical="8dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="4dp"
+    app:strokeColor="@color/material_dynamic_tertiary90"
+    app:strokeWidth="1dp"
+    android:backgroundTint="@color/white"
+    android:padding="16dp"
+    tools:context=".PregledStavkiActivity">
 
-    <TextView
-        android:id="@+id/artikal_naziv"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="" />
+        android:orientation="vertical"
+        android:spacing="8dp">
 
-    <TextView
-        android:id="@+id/kolicina"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="" />
+        <TextView
+            android:id="@+id/artikal_naziv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textAppearance="?android:textAppearanceMedium"
+            android:textColor="@color/black"/>
 
-    <TextView
-        android:id="@+id/vreme_popisivanja"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="" />
+        <TextView
+            android:id="@+id/kolicina"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textAppearance="?android:textAppearanceSmall"
+            android:textColor="@color/black"/>
 
-    <TextView
-        android:id="@+id/lokacijaTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="" />
+        <TextView
+            android:id="@+id/vreme_popisivanja"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textAppearance="?android:textAppearanceSmall"
+            android:textColor="@color/black"/>
 
-    <TextView
-        android:id="@+id/racunopolagacTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="" />
-</LinearLayout>
+        <TextView
+            android:id="@+id/lokacijaTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textAppearance="?android:textAppearanceSmall"
+            android:textColor="@color/black"/>
+
+        <TextView
+            android:id="@+id/racunopolagacTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textAppearance="?android:textAppearanceSmall"
+            android:textColor="@color/black"/>
+
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

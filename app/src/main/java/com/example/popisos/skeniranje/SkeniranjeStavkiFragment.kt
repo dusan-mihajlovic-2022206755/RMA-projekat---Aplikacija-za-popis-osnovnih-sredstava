@@ -51,7 +51,7 @@ class SkeniranjeStavkiFragment : Fragment() {
         val dbHelper = SQLitePopisHelper(requireContext())
         val popisStavke = dbHelper.getPopisStavkeByIdPopis(popisID)
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        binding.recyclerView.adapter = PopisStavkaAdapter(requireContext(), popisStavke)
+        binding.recyclerView.adapter = PopisStavkaAdapter(requireContext(), popisStavke.toMutableList())
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
