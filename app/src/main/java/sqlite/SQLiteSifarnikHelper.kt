@@ -38,7 +38,8 @@ class SQLiteSifarnikHelper(context: Context) : BaseSQLiteHelper(context, DATABAS
                 $COLUMN_IME TEXT NOT NULL,
                 $COLUMN_PREZIME TEXT NOT NULL,
                 $COLUMN_USERNAME TEXT NOT NULL,
-                $COLUMN_EMAIL TEXT NOT NULL
+                $COLUMN_EMAIL TEXT NOT NULL,
+                $COLUMN_PASSWORD TEXT NOT NULL
             )
         """)
 
@@ -162,8 +163,8 @@ class SQLiteSifarnikHelper(context: Context) : BaseSQLiteHelper(context, DATABAS
         val cursor = db.query(
             TABLE_ARTIKAL,
             null,
-            "$COLUMN_SIFRA LIKE ? OR $COLUMN_BARKOD LIKE ? OR $COLUMN_NAZIV LIKE ?",
-            arrayOf("%$query%", "%$query%", "%$query%"),
+            "$COLUMN_BARKOD LIKE ?",
+            arrayOf("%$query%"),
             null,
             null,
             null
@@ -220,8 +221,8 @@ class SQLiteSifarnikHelper(context: Context) : BaseSQLiteHelper(context, DATABAS
         val cursor = db.query(
             TABLE_LOKACIJA,
             null,
-            "$COLUMN_NAZIV LIKE ? OR $COLUMN_SIFRA LIKE ?",
-            arrayOf("%$query%", "%$query%"),
+            "$COLUMN_SIFRA LIKE ?",
+            arrayOf("%$query%"),
             null,
             null,
             null
@@ -247,8 +248,8 @@ class SQLiteSifarnikHelper(context: Context) : BaseSQLiteHelper(context, DATABAS
         val cursor = db.query(
             TABLE_RACUNOPOLAGAC,
             null,
-            "$COLUMN_IME_RACUNOPOLAGAC LIKE ? OR $COLUMN_PREZIME_RACUNOPOLAGAC LIKE ? OR $COLUMN_SIFRA_RACUNOPOLAGAC LIKE ?",
-            arrayOf("%$query%", "%$query%", "%$query%"),
+            "$COLUMN_SIFRA_RACUNOPOLAGAC LIKE ?",
+            arrayOf("%$query%"),
             null,
             null,
             null
@@ -279,6 +280,7 @@ class SQLiteSifarnikHelper(context: Context) : BaseSQLiteHelper(context, DATABAS
             put(COLUMN_PREZIME, user.prezime)
             put(COLUMN_USERNAME, user.username)
             put(COLUMN_EMAIL, user.email)
+            put(COLUMN_PASSWORD, user.password)
         }
         return db.insert(TABLE_USER, null, values).also { db.close() }
     }
@@ -295,7 +297,8 @@ class SQLiteSifarnikHelper(context: Context) : BaseSQLiteHelper(context, DATABAS
                         ime = getString(getColumnIndexOrThrow(COLUMN_IME)),
                         prezime = getString(getColumnIndexOrThrow(COLUMN_PREZIME)),
                         username = getString(getColumnIndexOrThrow(COLUMN_USERNAME)),
-                        email = getString(getColumnIndexOrThrow(COLUMN_EMAIL))
+                        email = getString(getColumnIndexOrThrow(COLUMN_EMAIL)),
+                        password = getString(getColumnIndexOrThrow(COLUMN_PASSWORD))
                     )
                 )
             }
@@ -304,6 +307,33 @@ class SQLiteSifarnikHelper(context: Context) : BaseSQLiteHelper(context, DATABAS
         db.close()
         return users
     }
+    fun getUserByUsernameAndPassword(username: String, password: String): User? {
+        val db = readableDatabase
+
+        val selection = "$COLUMN_USERNAME = ? AND $COLUMN_PASSWORD = ?"
+        val selectionArgs = arrayOf(username, password)
+
+        val cursor = db.query(TABLE_USER, null, selection, selectionArgs, null, null, null)
+        var user: User? = null
+
+        with(cursor) {
+            if (moveToFirst()) {
+                user = User(
+                    id = getInt(getColumnIndexOrThrow(COLUMN_ID)),
+                    ime = getString(getColumnIndexOrThrow(COLUMN_IME)),
+                    prezime = getString(getColumnIndexOrThrow(COLUMN_PREZIME)),
+                    username = getString(getColumnIndexOrThrow(COLUMN_USERNAME)),
+                    email = getString(getColumnIndexOrThrow(COLUMN_EMAIL)),
+                    password = getString(getColumnIndexOrThrow(COLUMN_PASSWORD))
+                )
+            }
+            close()
+        }
+        db.close()
+
+        return user  // If no match, it returns null
+    }
+
     fun insertRacunopolagac(racunopolagac: Racunopolagac): Long {
         val db = writableDatabase
         val values = ContentValues().apply {
@@ -402,7 +432,9 @@ class SQLiteSifarnikHelper(context: Context) : BaseSQLiteHelper(context, DATABAS
             }
 
 
-        insertUser(User(0,"Dušan", "Mihajlović", "duletest", "dusan.mihajlovic.22@singimail.rs"))
+        insertUser(User(0,"Dušan", "Mihajlović", "duletest", "dusan.mihajlovic.22@singimail.rs", "098f6bcd4621d373cade4e832627b4f6"))
+        insertUser(User(1,"Petar", "Petrović", "peratest", "Petar.Petrović.22@singimail.rs", "098f6bcd4621d373cade4e832627b4f6"))
+        insertUser(User(2,"Mirko", "Mirković", "mirkotest", "Mirko.Mirković.22@singimail.rs", "098f6bcd4621d373cade4e832627b4f6"))
     }
     fun getSifarnikData(artikalId: Int, lokacijaId: Int, racunopolagacId: Int):
             Triple<String?, String?, String?> {

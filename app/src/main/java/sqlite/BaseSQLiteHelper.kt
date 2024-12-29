@@ -39,6 +39,7 @@ open class BaseSQLiteHelper(context: Context, name: String, cursorFactory: Curso
         const val COLUMN_PREZIME = "prezime"
         const val COLUMN_USERNAME = "username"
         const val COLUMN_EMAIL = "email"
+        const val COLUMN_PASSWORD = "password"
 
         const val TABLE_RACUNOPOLAGAC = "Racunopolagac"
         const val COLUMN_IME_RACUNOPOLAGAC = "ime"

@@ -2,6 +2,7 @@ package com.example.popisos.skeniranje
 
 import com.example.popisosnovnihsredstava.adapters.PopisStavkaAdapter
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -11,6 +12,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.popisosnovnihsredstava.MainActivity
 import com.example.popisosnovnihsredstava.databinding.FragmentSkeniranjeStavkiBinding
 import com.example.popisosnovnihsredstava.entities.PopisStavka
 import sqlite.SQLitePopisHelper
@@ -43,6 +45,13 @@ class SkeniranjeStavkiFragment : Fragment() {
         }
         binding.textviewLokacija.text = "Lokacija: " + arguments?.getString("lokacija_naziv")
         binding.textviewRacunopolagac.text = "Računopolagač: " + arguments?.getString("racunopolagac_naziv")
+
+        binding.buttonToMainActivity?.setOnClickListener {
+            val intent = Intent(requireContext(), MainActivity::class.java)
+            startActivity(intent)
+            intent.putExtra("id_popis", popisID)
+            requireActivity().finish()
+        }
 
         return binding.root
     }

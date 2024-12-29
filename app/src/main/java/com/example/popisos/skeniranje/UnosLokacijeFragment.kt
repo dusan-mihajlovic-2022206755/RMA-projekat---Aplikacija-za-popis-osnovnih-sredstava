@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.popisosnovnihsredstava.R
 import com.example.popisosnovnihsredstava.databinding.FragmentUnoslokacijeBinding
+import com.google.android.material.appbar.MaterialToolbar
 import sqlite.SQLiteSifarnikHelper
 
 class UnosLokacijeFragment : Fragment() {
@@ -43,10 +44,11 @@ class UnosLokacijeFragment : Fragment() {
                                 putString("lokacija_naziv", lokacijaNaziv)
                                 putInt("id_lokacija", lokacijaID)
                             }
+                            binding.editTextUnosLokacije.setText("")
                             findNavController().navigate(R.id.fragment_racunopolagac, bundle)
                         }
                         else{
-                            Toast.makeText(requireContext(), "Nije pronađen nijedan artikal za ovaj unos!", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(requireContext(), "Nije pronađena nijedna lokacija za ovaj unos!", Toast.LENGTH_SHORT).show()
                         }
 
                     }

@@ -6,8 +6,12 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.popisos.getSifarnikData
+import com.example.popisos.sendPopisStavkeToServer
 import com.example.popisosnovnihsredstava.entities.User
+import sqlite.SQLitePopisHelper
 import sqlite.SQLiteSifarnikHelper
+import java.security.MessageDigest
 
 class LoginActivity : AppCompatActivity() {
 
@@ -29,20 +33,33 @@ class LoginActivity : AppCompatActivity() {
         val sharedPreferences = getSharedPreferences("UserPreferences", MODE_PRIVATE)
         usernameEditText.setText(sharedPreferences.getString("username", ""))
 
+        getSifarnikData(this) { isSuccess ->
+            if (isSuccess) {
+                Toast.makeText(this, "Šifarnik uspešno preuzet!", Toast.LENGTH_SHORT).show()
+            } else {
+                //demo i testiranje...
+                deleteDatabase("Sifarnik.db");
+                val sifarnik = SQLiteSifarnikHelper(this)
+                sifarnik.popuniTestnimPodacima()
+            }
+
+        }
+
         loginButton.setOnClickListener {
             val username = usernameEditText.text.toString()
             val password = passwordEditText.text.toString()
 
             if (username.isNotBlank() && password.isNotBlank()) {
                 val sifarnik = SQLiteSifarnikHelper(this)
-                val user = sifarnik.getUsers().find { it.username == username }
+                val encryptedPWD = md5Encrypt(password)
+                val user = sifarnik.getUserByUsernameAndPassword(username,encryptedPWD )
+
                 if (user != null) {
                     putInPreferences(user)
                     Toast.makeText(this, "Uspešan login", Toast.LENGTH_SHORT).show()
                     val intent = Intent(this, MainActivity::class.java)
                     startActivity(intent)
-                }
-                else{
+                } else {
                     Toast.makeText(this, "Korisnik nije pronađen!", Toast.LENGTH_SHORT).show()
                 }
 
@@ -53,7 +70,15 @@ class LoginActivity : AppCompatActivity() {
             }
         }
     }
-
+    fun md5Encrypt(input: String): String {
+        val md = MessageDigest.getInstance("MD5")
+        val hashBytes = md.digest(input.toByteArray())
+        return hashBytes.joinToString("") { "%02x".format(it) }  // Convert bytes to hex string
+    }
+    fun checkMd5(input: String, expectedMd5: String): Boolean {
+        val hashedInput = md5Encrypt(input)
+        return hashedInput == expectedMd5
+    }
     private fun putInPreferences(
         user: User
     ) {

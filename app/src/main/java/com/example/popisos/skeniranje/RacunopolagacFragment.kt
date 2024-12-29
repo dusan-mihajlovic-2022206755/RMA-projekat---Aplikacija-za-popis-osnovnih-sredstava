@@ -52,10 +52,11 @@ class RacunopolagacFragment : Fragment() {
                                 putString("racunopolagac_naziv", racunopolagacNaziv)
                                 putInt("id_racunopolagac", racunopolagacID)
                             }
+                            binding.editTextUnosRacunopolagaca.setText("")
                             findNavController().navigate(R.id.fragment_to_skeniranje_stavki, bundle)
                         }
                         else{
-                            Toast.makeText(requireContext(), "Nije pronađen nijedan artikal za ovaj unos!", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(requireContext(), "Nije pronađen nijedan računopolagač za ovaj unos!", Toast.LENGTH_SHORT).show()
                         }
 
                     }

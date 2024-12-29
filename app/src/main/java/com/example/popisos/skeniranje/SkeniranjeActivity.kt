@@ -22,11 +22,16 @@ class SkeniranjeActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setSupportActionBar(binding.toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+
         sharedViewModel.popisID.value = intent.getIntExtra("id_popis", 0)
 
         val navController = findNavController(R.id.nav_host_fragment_content_skeniranje)
         appBarConfiguration = AppBarConfiguration(navController.graph)
         setupActionBarWithNavController(navController, appBarConfiguration)
+
+
     }
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment_content_skeniranje)

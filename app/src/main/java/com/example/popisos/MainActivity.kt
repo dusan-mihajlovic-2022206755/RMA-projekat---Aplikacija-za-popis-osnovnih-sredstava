@@ -11,8 +11,12 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.ui.AppBarConfiguration
+import com.example.popisos.getPopisData
+import com.example.popisos.getSifarnikData
+import com.example.popisos.sendPopisStavkeToServer
 import com.example.popisos.skeniranje.SkeniranjeActivity
 import com.example.popisosnovnihsredstava.databinding.ActivityMainBinding
+import com.example.popisosnovnihsredstava.entities.Popis
 import sqlite.SQLitePopisHelper
 import sqlite.SQLiteSifarnikHelper
 import java.time.LocalDateTime
@@ -22,21 +26,26 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
-    private var izabraniPopisID : Int = 0
+    private var izabraniPopisID: Int = -1
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         setSupportActionBar(binding.toolbar)
 
+        izabraniPopisID = intent.getIntExtra("id_popis", -1)
+        FillPopisSpinner()
+        if (izabraniPopisID != -1) {
+            selektujPopis(izabraniPopisID)
+        }
         val sharedPreferences = getSharedPreferences("UserPreferences", Context.MODE_PRIVATE)
         binding.textviewUsername.text = sharedPreferences.getString("username", "")
 
         binding.buttonSkeniranje.setOnClickListener {
-            if (izabraniPopisID == 0){
-                Toast.makeText(this, "Nije izabrana nijedna popisna lista!", Toast.LENGTH_SHORT).show()
+            if (izabraniPopisID == -1) {
+                Toast.makeText(this, "Nije izabrana nijedna popisna lista!", Toast.LENGTH_SHORT)
+                    .show()
                 return@setOnClickListener
             }
 
@@ -46,30 +55,68 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.buttonPregledStavki.setOnClickListener {
-            if (izabraniPopisID == 0){
-                Toast.makeText(this, "Nije izabrana nijedna popisna lista!", Toast.LENGTH_SHORT).show()
+            if (izabraniPopisID == -1) {
+                Toast.makeText(this, "Nije izabrana nijedna popisna lista!", Toast.LENGTH_SHORT)
+                    .show()
                 return@setOnClickListener
             }
-
             val intent = Intent(this, PregledStavkiActivity::class.java)
             intent.putExtra("id_popis", izabraniPopisID)
             startActivity(intent)
         }
 
         binding.buttonPreuzmisifarnik.setOnClickListener {
-            deleteDatabase("sifarnik.db")
-            SQLiteSifarnikHelper(this).popuniTestnimPodacima()
-            Toast.makeText(this, "Šifarnik uspešno preuzet!", Toast.LENGTH_SHORT).show()
+            getSifarnikData(this) { isSuccess ->
+                if (isSuccess) {
+                    Toast.makeText(this, "Šifarnik uspešno preuzet!", Toast.LENGTH_SHORT).show()
+                } else {
+                    //test i demo...
+                    deleteDatabase("sifarnik.db")
+                    SQLiteSifarnikHelper(this).popuniTestnimPodacima()
+                    Toast.makeText(this, "Veb servis nije dostpupan, popunjavam testnim podacima!", Toast.LENGTH_LONG).show()
+                }
+            }
+            FillPopisSpinner()
+
+            getPopisData(this) { isSuccess ->
+                if (isSuccess) {
+                    Toast.makeText(this, "Popis uspešno preuzet!", Toast.LENGTH_SHORT).show()
+                } else {
+                    //test i demo..
+                    SQLitePopisHelper(this).unesiTestnePopise()
+                    Toast.makeText(this, "Veb servis nije dostupan, popunjavam testnim podacima!", Toast.LENGTH_LONG).show()
+                }
+            }
 
         }
         binding.buttonSinhronizuj.setOnClickListener {
-            deleteDatabase("bazaPopis.db")
-            SQLitePopisHelper(this).unesiTestnePopise()
-            FillPopisSpinner()
-            Toast.makeText(this, "Baza uspešno sinhronizovana!", Toast.LENGTH_SHORT).show()
+            sendPopisStavkeToServer(this) { isSuccess ->
+                if (isSuccess) {
+                    Toast.makeText(this, "Baza uspešno sinhronizovana!", Toast.LENGTH_SHORT).show()
+                    FillPopisSpinner()
+                } else {
+                    //demo i testiranje...
+                    deleteDatabase("bazaPopis.db")
+                    SQLitePopisHelper(this).unesiTestnePopise()
+                    FillPopisSpinner()
+                }
+
+            }
         }
-        FillPopisSpinner()
+
     }
+
+    private fun selektujPopis(izabraniPopisID: Int) {
+        val adapter = binding.spinner.adapter
+        for (i in 0 until adapter.count) {
+            val item = adapter.getItem(i) as Popis
+            if (item.id == izabraniPopisID) {
+                binding.spinner.setSelection(i)
+                break
+            }
+        }
+    }
+
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -111,6 +158,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
         return true
@@ -122,7 +170,7 @@ class MainActivity : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
-    }
+}
 
 
 //top level funkcija - može da se pozove sa bilo kog mesta...bolje nego static

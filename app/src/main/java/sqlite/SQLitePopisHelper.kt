@@ -153,6 +153,38 @@ class SQLitePopisHelper(context: Context) :
         return id
     }
 
+    fun insertIntoPopisWithouReplacement(datum: LocalDate, napomena: String?, active: Boolean): Long {
+        val db = writableDatabase
+
+        val cursor = db.query(
+            TABLE_POPIS,
+            arrayOf(COLUMN_POPIS_ID),
+            "$COLUMN_POPIS_DATUM = ? AND $COLUMN_POPIS_NAPOMENA = ?",
+            arrayOf(datum.toString(), napomena),
+            null, null, null
+        )
+
+        return if (cursor.moveToFirst()) {
+            cursor.close()
+            -1
+        } else {
+            val values = ContentValues().apply {
+                put(COLUMN_POPIS_DATUM, datum.toString())
+                put(COLUMN_POPIS_NAPOMENA, napomena)
+                put(COLUMN_POPIS_ACTIVE, if (active) 1 else 0)
+            }
+
+            val id = db.insert(TABLE_POPIS, null, values)
+            cursor.close()
+            id
+        }
+    }
+
+    fun deletePopis() {
+        val db = writableDatabase
+        db.execSQL("DELETE FROM popis")
+        db.close()
+    }
     fun unesiTestnePopise() {
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
@@ -190,7 +222,7 @@ class SQLitePopisHelper(context: Context) :
         )
         for (popis in popisList) {
             popis.datum?.let {
-                insertIntoPopis(
+                insertIntoPopisWithouReplacement(
                     popis.datum ?: LocalDate.now(),
                     popis.napomena,
                     popis.active ?: false
@@ -230,6 +262,36 @@ class SQLitePopisHelper(context: Context) :
         db.close()
         return stavke
     }
+    fun getAllPopisStavke(): List<PopisStavka> {
+        val popisStavke = mutableListOf<PopisStavka>()
+        val db = readableDatabase
+        val cursor = db.query(
+            TABLE_POPIS_STAVKA,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+        )
+        while (cursor.moveToNext()) {
+            val stavka = PopisStavka(
+                id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID)),
+                idPopis = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_STAVKA_ID_POPIS)),
+                idArtikal = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_STAVKA_ID_ARTIKAL)),
+                idLokacija = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_STAVKA_ID_LOKACIJA)),
+                kolicina = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_STAVKA_KOLICINA)),
+                idUser = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_STAVKA_ID_USER)),
+                idRacunopolagac = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_STAVKA_ID_RACUNOPOLAGAC)),
+                vremePopisivanja = parseDateTimeFromString(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_STAVKA_VREME_POPISIVANJA)))
+            )
+            popisStavke.add(stavka)
+        }
+        cursor.close()
+        db.close()
+        return popisStavke
+    }
+
     fun checkIfPopisStavkaExists(artikalID: Int, popisID: Int, lokacijaID: Int, racunopolagacID: Int): Int {
         val db = this.readableDatabase
 
