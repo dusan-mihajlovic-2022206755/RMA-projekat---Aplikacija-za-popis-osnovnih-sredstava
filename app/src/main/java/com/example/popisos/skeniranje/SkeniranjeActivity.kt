@@ -1,4 +1,4 @@
-package com.example.popisosnovnihsredstava
+package com.example.popisos.skeniranje
 
 import android.os.Bundle
 import androidx.activity.viewModels
@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
+import com.example.popisosnovnihsredstava.R
 import com.example.popisosnovnihsredstava.databinding.ActivitySkeniranjeBinding
 
 class SkeniranjeActivity : AppCompatActivity() {

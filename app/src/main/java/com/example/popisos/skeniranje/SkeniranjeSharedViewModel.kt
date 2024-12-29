@@ -1,4 +1,4 @@
-package com.example.popisosnovnihsredstava
+package com.example.popisos.skeniranje
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel

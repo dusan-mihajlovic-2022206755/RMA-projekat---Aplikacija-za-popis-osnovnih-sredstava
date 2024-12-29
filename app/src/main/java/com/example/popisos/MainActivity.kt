@@ -11,8 +11,10 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.ui.AppBarConfiguration
+import com.example.popisos.skeniranje.SkeniranjeActivity
 import com.example.popisosnovnihsredstava.databinding.ActivityMainBinding
-import com.example.popisosnovnihsredstava.helpers.SQLiteSifarnikHelper
+import sqlite.SQLitePopisHelper
+import sqlite.SQLiteSifarnikHelper
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -114,11 +116,18 @@ class MainActivity : AppCompatActivity() {
 
 
 //top level funkcija - može da se pozove sa bilo kog mesta...bolje nego static
-fun formatirajDateTime(valueFromDBRow: String): LocalDateTime {
-    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
-    val vremePopisivanjaStr = valueFromDBRow
-    val normalizedStr = vremePopisivanjaStr.split(".")[0]
-    val vremePopisivanja = LocalDateTime.parse(normalizedStr, formatter)!!
-    return vremePopisivanja
+fun formatDateTimeToString(value: LocalDateTime): String {
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+    return value.format(formatter)  // Format and return as string
 }
 
+fun parseDateTimeFromString(valueFromDBRow: String): LocalDateTime {
+    val formatter1 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+    val formatter2 = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
+
+    return try {
+        LocalDateTime.parse(valueFromDBRow, formatter1)
+    } catch (e: Exception) {
+        LocalDateTime.parse(valueFromDBRow, formatter2)
+    }
+}

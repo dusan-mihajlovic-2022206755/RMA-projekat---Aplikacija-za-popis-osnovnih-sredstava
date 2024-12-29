@@ -1,4 +1,4 @@
-package adapters
+package com.example.popisosnovnihsredstava.adapters
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -8,8 +8,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.popisosnovnihsredstava.R
 import com.example.popisosnovnihsredstava.entities.PopisStavka
-import com.example.popisosnovnihsredstava.formatirajDateTime
-import com.example.popisosnovnihsredstava.helpers.SQLiteSifarnikHelper
+import com.example.popisosnovnihsredstava.formatDateTimeToString
+import sqlite.SQLiteSifarnikHelper
 
 class PopisStavkaAdapter(private val context: Context, private val stavke: List<PopisStavka>) :
     RecyclerView.Adapter<PopisStavkaAdapter.PopisStavkaViewHolder>() {
@@ -32,7 +32,7 @@ class PopisStavkaAdapter(private val context: Context, private val stavke: List<
 
         holder.idArtikalTextView.text = nazivArtikla
         holder.kolicinaTextView.text = "Količina: " + stavka.kolicina.toString()
-        holder.vremeTextView.text = formatirajDateTime(stavka.vremePopisivanja.toString()).toString()
+        holder.vremeTextView.text = formatDateTimeToString(stavka.vremePopisivanja)
     }
 
     override fun getItemCount(): Int = stavke.size

@@ -1,11 +1,14 @@
-package com.example.popisosnovnihsredstava
+package sqlite
 
 import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import com.example.popisos.models.PopisStavkaModelPregledStavki
 import com.example.popisosnovnihsredstava.entities.Popis
 import com.example.popisosnovnihsredstava.entities.PopisStavka
+import com.example.popisosnovnihsredstava.formatDateTimeToString
+import com.example.popisosnovnihsredstava.parseDateTimeFromString
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -14,28 +17,10 @@ import java.util.Date
 import java.util.Locale
 
 class SQLitePopisHelper(context: Context) :
-    SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
+    BaseSQLiteHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
     companion object {
         const val DATABASE_NAME = "bazaPopis.db"
         const val DATABASE_VERSION = 1
-
-        // Table: Popis
-        const val TABLE_POPIS = "Popis"
-        const val COLUMN_POPIS_ID = "id"
-        const val COLUMN_POPIS_DATUM = "datum"
-        const val COLUMN_POPIS_NAPOMENA = "napomena"
-        const val COLUMN_POPIS_ACTIVE = "active"
-
-        // Table: PopisStavka
-        const val TABLE_POPIS_STAVKA = "PopisStavka"
-        const val COLUMN_STAVKA_ID = "id"
-        const val COLUMN_STAVKA_ID_POPIS = "id_popis"
-        const val COLUMN_STAVKA_ID_ARTIKAL = "id_artikal"
-        const val COLUMN_STAVKA_ID_LOKACIJA = "id_lokacija"
-        const val COLUMN_STAVKA_KOLICINA = "kolicina"
-        const val COLUMN_STAVKA_ID_USER = "id_user"
-        const val COLUMN_STAVKA_VREME_POPISIVANJA = "vreme_popisivanja"
-        const val COLUMN_STAVKA_ID_RACUNOPOLAGAC = "id_racunopolagac" // Newly added field
     }
 
     fun createDB(db: SQLiteDatabase?) {
@@ -73,14 +58,12 @@ class SQLitePopisHelper(context: Context) :
         onCreate(db)
     }
 
-    override fun onCreate(db: SQLiteDatabase) {
-        createDB(db)
+    override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+        upgradeDB(db, oldVersion, newVersion)
     }
 
-    override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-        if (db != null) {
-            upgradeDB(db, oldVersion, newVersion)
-        }
+    override fun onCreate(db: SQLiteDatabase) {
+        createDB(db)
     }
 
     fun insertPopisStavka(
@@ -100,7 +83,7 @@ class SQLitePopisHelper(context: Context) :
             put(COLUMN_STAVKA_ID_LOKACIJA, idLokacija)
             put(COLUMN_STAVKA_KOLICINA, kolicina)
             put(COLUMN_STAVKA_ID_USER, idUser)
-            put(COLUMN_STAVKA_VREME_POPISIVANJA,  formatirajDateTime(vremePopisivanja.toString()).toString())
+            put(COLUMN_STAVKA_VREME_POPISIVANJA,  formatDateTimeToString(vremePopisivanja))
             put(COLUMN_STAVKA_ID_RACUNOPOLAGAC, idRacunopolagac)
         }
         val id = db.insert(TABLE_POPIS_STAVKA, null, values)
@@ -112,49 +95,11 @@ class SQLitePopisHelper(context: Context) :
         val currentTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
 
         val query = """
-            UPDATE PopisStavka 
-            SET kolicina = kolicina + 1, vremePopisivanja = ?
-            WHERE id = ?
+            UPDATE $TABLE_POPIS_STAVKA 
+            SET $COLUMN_STAVKA_KOLICINA = $COLUMN_STAVKA_KOLICINA + 1, $COLUMN_STAVKA_VREME_POPISIVANJA = ?
+            WHERE $COLUMN_STAVKA_ID = ?
         """
         db.execSQL(query, arrayOf(currentTime, idPopisStavka))
-    }
-
-    fun getAllPopisStavka(): List<PopisStavka> {
-        val db = readableDatabase
-        val cursor = db.query(TABLE_POPIS_STAVKA, null, null, null, null, null, null)
-        val stavkaList = mutableListOf<PopisStavka>()
-
-        with(cursor) {
-            while (moveToNext()) {
-                val id = getInt(getColumnIndexOrThrow(COLUMN_STAVKA_ID))
-                val idPopis = getInt(getColumnIndexOrThrow(COLUMN_STAVKA_ID_POPIS))
-                val idArtikal = getInt(getColumnIndexOrThrow(COLUMN_STAVKA_ID_ARTIKAL))
-                val idLokacija = getInt(getColumnIndexOrThrow(COLUMN_STAVKA_ID_LOKACIJA))
-                val kolicina = getInt(getColumnIndexOrThrow(COLUMN_STAVKA_KOLICINA))
-                val idUser = getInt(getColumnIndexOrThrow(COLUMN_STAVKA_ID_USER))
-                val vremePopisivanja = LocalDateTime.parse(
-                    getString(
-                        getColumnIndexOrThrow(COLUMN_STAVKA_VREME_POPISIVANJA)
-                    )
-                )
-                val idRacunopolagac = getInt(getColumnIndexOrThrow(COLUMN_STAVKA_ID_RACUNOPOLAGAC))
-                stavkaList.add(
-                    PopisStavka(
-                        id,
-                        idPopis,
-                        idArtikal,
-                        idLokacija,
-                        kolicina,
-                        idUser,
-                        idRacunopolagac,
-                        vremePopisivanja
-                    )
-                )
-            }
-        }
-        cursor.close()
-        db.close()
-        return stavkaList
     }
 
     fun getAllPopis(): List<Popis> {
@@ -239,15 +184,15 @@ class SQLitePopisHelper(context: Context) :
     fun getPopisStavkeByIdPopis(popisID: Int): List<PopisStavka> {
         val db = readableDatabase
         val cursor = db.rawQuery(
-            "SELECT * FROM PopisStavka WHERE id_popis = ? ORDER BY vreme_popisivanja DESC",
+            "SELECT * FROM $TABLE_POPIS_STAVKA WHERE $COLUMN_STAVKA_ID_POPIS = ? ORDER BY $COLUMN_STAVKA_VREME_POPISIVANJA DESC",
             arrayOf(popisID.toString())
         )
         val stavke = mutableListOf<PopisStavka>()
 
         with(cursor) {
             while (moveToNext()) {
-                val valueFromDBRow = getColumnIndexOrThrow("vreme_popisivanja")
-                val vremePopisivanja = formatirajDateTime(getString(valueFromDBRow))
+                val valueFromDBRow = getColumnIndexOrThrow(COLUMN_STAVKA_VREME_POPISIVANJA)
+                val vremePopisivanja = parseDateTimeFromString(getString(valueFromDBRow))
                 stavke.add(
                     PopisStavka(
                         getInt(getColumnIndexOrThrow("id")),
@@ -288,12 +233,13 @@ class SQLitePopisHelper(context: Context) :
         val popisStavkaID = if (cursor.moveToFirst()) {
             cursor.getInt(cursor.getColumnIndexOrThrow("id"))
         } else {
-            return -1
+            -1
         }
 
         cursor.close()
 
         return popisStavkaID
     }
+
 }
 

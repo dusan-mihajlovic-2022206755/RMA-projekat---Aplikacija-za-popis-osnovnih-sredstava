@@ -1,6 +1,6 @@
-package com.example.popisosnovnihsredstava
+package com.example.popisos.skeniranje
 
-import adapters.PopisStavkaAdapter
+import com.example.popisosnovnihsredstava.adapters.PopisStavkaAdapter
 import android.content.Context
 import android.os.Bundle
 import android.view.KeyEvent
@@ -13,7 +13,8 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.popisosnovnihsredstava.databinding.FragmentSkeniranjeStavkiBinding
 import com.example.popisosnovnihsredstava.entities.PopisStavka
-import com.example.popisosnovnihsredstava.helpers.SQLiteSifarnikHelper
+import sqlite.SQLitePopisHelper
+import sqlite.SQLiteSifarnikHelper
 import java.time.LocalDateTime
 
 class SkeniranjeStavkiFragment : Fragment() {
@@ -56,6 +57,7 @@ class SkeniranjeStavkiFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.edittextUnosstavke.requestFocus()
+        binding.edittextUnosstavke.selectAll()
 
         sharedViewModel.popisID.observe(viewLifecycleOwner) { id ->
             popisID = id
@@ -68,39 +70,49 @@ class SkeniranjeStavkiFragment : Fragment() {
                 if (inputText.isNotEmpty()) {
                     popisiStavku(inputText)
                 }
+                binding.edittextUnosstavke.setText("")
+                binding.edittextUnosstavke.requestFocus()
             }
             false
         }
     }
 
     private fun popisiStavku(inputText: String) {
-        val sifarnik = SQLiteSifarnikHelper(requireContext())
-        val srchRes = sifarnik.searchArtikli(inputText.trim());
-        if (srchRes.isNotEmpty()) {
+        try {
+            val sifarnik = SQLiteSifarnikHelper(requireContext())
+            val srchRes = sifarnik.searchArtikli(inputText.trim());
+            if (srchRes.isEmpty()) {
+                Toast.makeText(requireContext(), "Nije pronađen nijedan artikal za ovaj unos!", Toast.LENGTH_SHORT).show()
+                return
+            }
             artikalID = srchRes[0].id //napraviti popup da bira?
+
+            val popisDB = SQLitePopisHelper(requireContext())
+            val postojeciID : Int = popisDB.checkIfPopisStavkaExists(artikalID, popisID, lokacijaID, racunopolagacID)
+            if (postojeciID == -1){
+                val stavka = PopisStavka(
+                    id = 0,
+                    idPopis = popisID,
+                    idArtikal = artikalID,
+                    idLokacija = lokacijaID,
+                    kolicina = 1,
+                    idUser = userID,
+                    idRacunopolagac = racunopolagacID,
+                    vremePopisivanja = LocalDateTime.now()
+                )
+                if(!unesiStavkuUBazu(stavka)){
+                }
+            }
+            else{
+                popisDB.incrementKolicinaById(postojeciID)
+            }
+            Toast.makeText(requireContext(), "Stavka uspešno popisana!", Toast.LENGTH_SHORT).show()
+            //binding.recyclerView.adapter?.notifyItemInserted(0)
+            //binding.recyclerView.adapter?.notifyDataSetChanged()
+            InitRecyclerView()
+        } catch (e: Exception) {
+            Toast.makeText(requireContext(), e.message, Toast.LENGTH_LONG).show()
         }
-        val popisDB = SQLitePopisHelper(requireContext())
-        val postojeciID : Int = popisDB.checkIfPopisStavkaExists(artikalID, popisID, lokacijaID, racunopolagacID)
-        if (postojeciID > -1){
-            val stavka = PopisStavka(
-                id = 0,
-                idPopis = popisID,
-                idArtikal = artikalID,
-                idLokacija = lokacijaID,
-                kolicina = 1,
-                idUser = userID,
-                idRacunopolagac = racunopolagacID,
-                vremePopisivanja = LocalDateTime.now()
-            )
-            unesiStavkuUBazu(stavka)
-        }
-        else{
-            popisDB.incrementKolicinaById(postojeciID)
-        }
-        Toast.makeText(requireContext(), "Stavka uspešno popisana!", Toast.LENGTH_SHORT).show()
-        //binding.recyclerView.adapter?.notifyItemInserted(0)
-        //binding.recyclerView.adapter?.notifyDataSetChanged()
-        InitRecyclerView()
     }
 
     private fun unesiStavkuUBazu(stavka: PopisStavka): Boolean {
@@ -117,7 +129,7 @@ class SkeniranjeStavkiFragment : Fragment() {
             )
             return true
         } catch (ex: Exception) {
-            return false
+            throw ex
         }
     }
 

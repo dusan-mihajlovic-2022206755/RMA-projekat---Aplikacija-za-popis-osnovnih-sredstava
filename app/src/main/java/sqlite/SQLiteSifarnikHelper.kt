@@ -1,4 +1,4 @@
-package com.example.popisosnovnihsredstava.helpers
+package sqlite
 
 import android.content.ContentValues
 import android.content.Context
@@ -9,10 +9,12 @@ import com.example.popisosnovnihsredstava.entities.Lokacija
 import com.example.popisosnovnihsredstava.entities.Racunopolagac
 import com.example.popisosnovnihsredstava.entities.User
 
-class SQLiteSifarnikHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
-
+class SQLiteSifarnikHelper(context: Context) : BaseSQLiteHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
+    companion object{
+        private const val DATABASE_NAME = "Sifarnik.db"
+        private const val DATABASE_VERSION = 1
+    }
     override fun onCreate(db: SQLiteDatabase) {
-        // Create Artikal table
         db.execSQL("""
             CREATE TABLE $TABLE_ARTIKAL (
                 $COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -22,7 +24,6 @@ class SQLiteSifarnikHelper(context: Context) : SQLiteOpenHelper(context, DATABAS
             )
         """)
 
-        // Create Lokacija table
         db.execSQL("""
             CREATE TABLE $TABLE_LOKACIJA (
                 $COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -31,7 +32,6 @@ class SQLiteSifarnikHelper(context: Context) : SQLiteOpenHelper(context, DATABAS
             )
         """)
 
-        // Create User table
         db.execSQL("""
             CREATE TABLE $TABLE_USER (
                 $COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -61,32 +61,7 @@ class SQLiteSifarnikHelper(context: Context) : SQLiteOpenHelper(context, DATABAS
         onCreate(db)
     }
 
-    companion object {
-        private const val DATABASE_NAME = "Sifarnik.db"
-        private const val DATABASE_VERSION = 1
 
-        private const val TABLE_ARTIKAL = "Artikal"
-        private const val COLUMN_ID = "id"
-        private const val COLUMN_NAZIV = "naziv"
-        private const val COLUMN_BARKOD = "barkod"
-        private const val COLUMN_SIFRA_ARTIKAL = "sifra"
-
-        private const val TABLE_LOKACIJA = "Lokacija"
-        private const val COLUMN_NAZIV_LOKACIJA = "naziv"
-        private const val COLUMN_SIFRA = "sifra"
-
-        private const val TABLE_USER = "User"
-        private const val COLUMN_IME = "ime"
-        private const val COLUMN_PREZIME = "prezime"
-        private const val COLUMN_USERNAME = "username"
-        private const val COLUMN_EMAIL = "email"
-
-        private const val TABLE_RACUNOPOLAGAC = "Racunopolagac"
-        private const val COLUMN_IME_RACUNOPOLAGAC = "ime"
-        private const val COLUMN_PREZIME_RACUNOPOLAGAC = "prezime"
-        private const val COLUMN_SIFRA_RACUNOPOLAGAC = "sifra"
-        private const val COLUMN_FUNKCIJA_RACUNOPOLAGAC = "funkcija"
-    }
 
     fun insertArtikal(artikal: Artikal): Long {
         val db = writableDatabase
@@ -388,6 +363,32 @@ class SQLiteSifarnikHelper(context: Context) : SQLiteOpenHelper(context, DATABAS
 
 
         insertUser(User(0,"Dušan", "Mihajlović", "duletest", "dusan.mihajlovic.22@singimail.rs"))
+    }
+    fun getSifarnikData(artikalId: Int, lokacijaId: Int, racunopolagacId: Int):
+            Triple<String?, String?, String?> {
+        val db = readableDatabase
+        val cursor1 = db.rawQuery(
+            "SELECT sifra || ' ' || ime || ' ' || prezime AS sifraImePrezimeRacunopolagac FROM Racunopolagac WHERE id = ?",
+            arrayOf(racunopolagacId.toString())
+        )
+        val sifraImePrezimeRacunopolagac = if (cursor1.moveToFirst()) cursor1.getString(0) else null
+        cursor1.close()
+
+        val cursor2 = db.rawQuery(
+            "SELECT sifra || ' ' || naziv AS sifraNazivLokacija FROM Lokacija WHERE id = ?",
+            arrayOf(lokacijaId.toString())
+        )
+        val sifraNazivLokacija = if (cursor2.moveToFirst()) cursor2.getString(0) else null
+        cursor2.close()
+
+        val cursor3 = db.rawQuery(
+            "SELECT sifra || ' ' || naziv AS sifraNazivArtikal FROM Artikal WHERE id = ?",
+            arrayOf(artikalId.toString())
+        )
+        val sifraNazivArtikal = if (cursor3.moveToFirst()) cursor3.getString(0) else null
+        cursor3.close()
+
+        return Triple(sifraImePrezimeRacunopolagac, sifraNazivLokacija, sifraNazivArtikal)
     }
 
 }

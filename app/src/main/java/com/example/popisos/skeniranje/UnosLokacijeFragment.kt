@@ -1,4 +1,4 @@
-package com.example.popisosnovnihsredstava
+package com.example.popisos.skeniranje
 
 import android.os.Bundle
 import android.view.KeyEvent
@@ -8,8 +8,9 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.example.popisosnovnihsredstava.R
 import com.example.popisosnovnihsredstava.databinding.FragmentUnoslokacijeBinding
-import com.example.popisosnovnihsredstava.helpers.SQLiteSifarnikHelper
+import sqlite.SQLiteSifarnikHelper
 
 class UnosLokacijeFragment : Fragment() {
 
@@ -25,7 +26,8 @@ class UnosLokacijeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        binding.editTextUnosLokacije.requestFocus()
+        binding.editTextUnosLokacije.selectAll()
 
         binding.editTextUnosLokacije.setOnEditorActionListener { v, _, event ->
             if (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER) {

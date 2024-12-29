@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/fragment_unos_lokacije"
-        android:name="com.example.popisosnovnihsredstava.UnosLokacijeFragment"
+        android:name="com.example.popisos.skeniranje.UnosLokacijeFragment"
         android:label="Lokacija"
         tools:layout="@layout/fragment_unoslokacije">
         <action
@@ -16,7 +16,7 @@
 
     <fragment
         android:id="@+id/fragment_racunopolagac"
-        android:name="com.example.popisosnovnihsredstava.RacunopolagacFragment"
+        android:name="com.example.popisos.skeniranje.RacunopolagacFragment"
         android:label="Računopolagač"
         tools:layout="@layout/fragment_racunopolagac">
         <action
@@ -26,7 +26,7 @@
 
     <fragment
         android:id="@+id/fragment_to_skeniranje_stavki"
-        android:name="com.example.popisosnovnihsredstava.SkeniranjeStavkiFragment"
+        android:name="com.example.popisos.skeniranje.SkeniranjeStavkiFragment"
         android:label="Skeniranje"
         tools:layout="@layout/fragment_skeniranje_stavki" />
 

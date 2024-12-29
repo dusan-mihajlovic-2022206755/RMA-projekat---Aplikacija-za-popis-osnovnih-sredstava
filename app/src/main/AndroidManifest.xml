@@ -23,26 +23,17 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SkeniranjeActivity"
+            android:name="com.example.popisos.skeniranje.SkeniranjeActivity"
             android:exported="false"
-            android:theme="@style/Theme.MyApplication" /> <!-- <activity -->
-        <!-- android:name=".ui.login.LoginActivity" -->
-        <!-- android:exported="true" -->
-        <!-- android:label="@string/title_activity_login"> -->
-        <!-- <intent-filter> -->
-        <!-- <action android:name="android.intent.action.MAIN" /> -->
-        <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-        <!-- </intent-filter> -->
-        <!-- </activity> -->
+            android:theme="@style/Theme.MyApplication" />
         <activity
             android:name=".MainActivity"
-            android:exported="true"
+            android:exported="false"
             android:theme="@style/Theme.MyApplication">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+        </activity>
+        <activity android:name=".PregledStavkiActivity"
+            android:exported="false"
+            android:theme="@style/Theme.MyApplication">
         </activity>
     </application>
 

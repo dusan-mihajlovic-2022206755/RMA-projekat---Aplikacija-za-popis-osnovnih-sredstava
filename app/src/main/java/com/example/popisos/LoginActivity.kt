@@ -7,7 +7,7 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.popisosnovnihsredstava.entities.User
-import com.example.popisosnovnihsredstava.helpers.SQLiteSifarnikHelper
+import sqlite.SQLiteSifarnikHelper
 
 class LoginActivity : AppCompatActivity() {
 

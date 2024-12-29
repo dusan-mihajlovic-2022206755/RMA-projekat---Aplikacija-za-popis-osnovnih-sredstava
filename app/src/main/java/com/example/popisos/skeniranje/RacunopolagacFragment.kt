@@ -1,4 +1,4 @@
-package com.example.popisosnovnihsredstava
+package com.example.popisos.skeniranje
 
 import android.os.Bundle
 import android.view.KeyEvent
@@ -8,8 +8,9 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.example.popisosnovnihsredstava.R
 import com.example.popisosnovnihsredstava.databinding.FragmentRacunopolagacBinding
-import com.example.popisosnovnihsredstava.helpers.SQLiteSifarnikHelper
+import sqlite.SQLiteSifarnikHelper
 
 class RacunopolagacFragment : Fragment() {
 
@@ -32,6 +33,9 @@ class RacunopolagacFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.editTextUnosRacunopolagaca.requestFocus()
+        binding.editTextUnosRacunopolagaca.selectAll()
+
         binding.editTextUnosRacunopolagaca.setOnEditorActionListener { v, actionId, event ->
             if (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER) {
                 val inputText = v.text.toString()

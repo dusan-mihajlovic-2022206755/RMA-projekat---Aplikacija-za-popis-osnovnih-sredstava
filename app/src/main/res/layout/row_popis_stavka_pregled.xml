@@ -19,6 +19,18 @@
         android:text="" />
 
     <TextView
+        android:id="@+id/vreme_popisivanja"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="" />
+
+    <TextView
+        android:id="@+id/lokacijaTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="" />
+
+    <TextView
         android:id="@+id/racunopolagacTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
